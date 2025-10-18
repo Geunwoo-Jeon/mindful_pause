@@ -44,7 +44,7 @@ class AppUsageAccessibilityService : AccessibilityService() {
             if (isPopupActivity) {
                 // 팝업이 표시됨
                 isPopupShowing = true
-                shouldShowPopupAgain = false
+                // shouldShowPopupAgain은 그대로 유지 (사용자가 답변을 완료할 때만 false로 변경)
             } else {
                 // 다른 앱으로 전환
                 isPopupShowing = false

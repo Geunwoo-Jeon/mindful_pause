@@ -25,6 +25,8 @@ class MonitoringService : Service() {
     private var lastTickTime = 0L
     private var isScreenOn = false
     private var shouldShowPopup = false
+    private var isPaused = false
+    private var pauseEndTime = 0L // 일시중지 종료 시간
 
     private lateinit var powerManager: PowerManager
     private lateinit var screenReceiver: BroadcastReceiver
@@ -52,6 +54,25 @@ class MonitoringService : Service() {
         fun stopService(context: Context) {
             val intent = Intent(context, MonitoringService::class.java)
             context.stopService(intent)
+        }
+
+        fun pauseService(context: Context, durationMinutes: Int) {
+            getInstance()?.pause(durationMinutes)
+        }
+
+        fun resumeService(context: Context) {
+            getInstance()?.resume()
+        }
+
+        fun isPaused(): Boolean {
+            return getInstance()?.isPaused ?: false
+        }
+
+        fun getRemainingPauseTime(): Long {
+            val instance = getInstance() ?: return 0
+            if (!instance.isPaused) return 0
+            val remaining = instance.pauseEndTime - System.currentTimeMillis()
+            return if (remaining > 0) remaining else 0
         }
     }
 
@@ -136,9 +157,16 @@ class MonitoringService : Service() {
         val minutes = (accumulatedTime / 1000 / 60).toInt()
         val seconds = ((accumulatedTime / 1000) % 60).toInt()
 
+        val contentText = if (isPaused) {
+            val remainingMinutes = ((pauseEndTime - System.currentTimeMillis()) / 1000 / 60).toInt()
+            "일시중지 중 (${remainingMinutes}분 남음)"
+        } else {
+            "스크린 타임: ${seconds}초 / 30초 (테스트)"
+        }
+
         return NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle("마음챙김 질문 실행 중")
-            .setContentText("스크린 타임: ${seconds}초 / 30초 (테스트)")
+            .setContentText(contentText)
             .setSmallIcon(android.R.drawable.ic_dialog_info)
             .setContentIntent(pendingIntent)
             .setOngoing(true)
@@ -156,6 +184,24 @@ class MonitoringService : Service() {
         timerRunnable = object : Runnable {
             override fun run() {
                 val currentTime = System.currentTimeMillis()
+
+                // 일시중지 상태 확인
+                if (isPaused) {
+                    if (currentTime >= pauseEndTime) {
+                        // 일시중지 종료
+                        isPaused = false
+                        pauseEndTime = 0L
+                        android.util.Log.d("MonitoringService", "일시중지 종료 - 타이머 재개")
+                        updateNotification()
+                    } else {
+                        // 일시중지 중 - 알림만 업데이트
+                        android.util.Log.d("MonitoringService", "일시중지 중")
+                        updateNotification()
+                        lastTickTime = currentTime
+                        handler.postDelayed(this, TICK_INTERVAL)
+                        return
+                    }
+                }
 
                 // 화면이 켜져 있고, 팝업이 표시되지 않았을 때만 시간 누적
                 if (isScreenOn && !shouldShowPopup) {
@@ -216,5 +262,19 @@ class MonitoringService : Service() {
 
     fun notifyPopupCompleted() {
         shouldShowPopup = false
+    }
+
+    fun pause(durationMinutes: Int) {
+        isPaused = true
+        pauseEndTime = System.currentTimeMillis() + (durationMinutes * 60 * 1000L)
+        android.util.Log.d("MonitoringService", "${durationMinutes}분 동안 일시중지")
+        updateNotification()
+    }
+
+    fun resume() {
+        isPaused = false
+        pauseEndTime = 0L
+        android.util.Log.d("MonitoringService", "일시중지 해제")
+        updateNotification()
     }
 }

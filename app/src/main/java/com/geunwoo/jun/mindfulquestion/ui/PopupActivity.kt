@@ -17,6 +17,9 @@ import androidx.compose.ui.unit.dp
 import com.geunwoo.jun.mindfulquestion.ui.theme.MindfulQuestionTheme
 import com.geunwoo.jun.mindfulquestion.services.AppUsageAccessibilityService
 import com.geunwoo.jun.mindfulquestion.services.MonitoringService
+import com.geunwoo.jun.mindfulquestion.data.AppDatabase
+import com.geunwoo.jun.mindfulquestion.data.Answer
+import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -58,16 +61,28 @@ class PopupActivity : ComponentActivity() {
                         initialAnswer = answer2,
                         onNext = { answer ->
                             answer2 = answer
-                            // TODO: Phase 5에서 데이터베이스에 저장
-                            android.util.Log.d("PopupActivity", "답변1: $answer1")
-                            android.util.Log.d("PopupActivity", "답변2: $answer2")
 
-                            // 팝업 완료됨을 알림
-                            AppUsageAccessibilityService.setPopupShowing(false)
-                            AppUsageAccessibilityService.setShouldShowPopupAgain(false)
-                            MonitoringService.getInstance()?.notifyPopupCompleted()
+                            // 데이터베이스에 답변 저장
+                            val database = AppDatabase.getDatabase(this@PopupActivity)
+                            val answerEntity = Answer(
+                                timestamp = System.currentTimeMillis(),
+                                question1 = "안녕하세요. 현재 당신은 무엇을 하고 있으며, 왜 그 일을 하고 계신가요?",
+                                answer1 = answer1,
+                                question2 = "당신은 지금부터 무슨 일을 할 것이며, 왜 그 일을 하려고 하시나요?",
+                                answer2 = answer2
+                            )
 
-                            finish() // 팝업 닫기
+                            lifecycleScope.launch {
+                                database.answerDao().insert(answerEntity)
+                                android.util.Log.d("PopupActivity", "답변 저장 완료: $answer1 / $answer2")
+
+                                // 팝업 완료됨을 알림
+                                AppUsageAccessibilityService.setPopupShowing(false)
+                                AppUsageAccessibilityService.setShouldShowPopupAgain(false)
+                                MonitoringService.getInstance()?.notifyPopupCompleted()
+
+                                finish() // 팝업 닫기
+                            }
                         }
                     )
                 }
