@@ -65,6 +65,12 @@ class MainActivity : ComponentActivity() {
     private fun checkPermissions() {
         overlayPermissionGranted = PermissionHelper.hasOverlayPermission(this)
         notificationPermissionGranted = PermissionHelper.hasNotificationPermission(this)
+
+        // 권한이 모두 허용되면 자동으로 서비스 시작
+        if (overlayPermissionGranted && notificationPermissionGranted && !isServiceRunning) {
+            MonitoringService.startService(this)
+            isServiceRunning = true
+        }
     }
 
     override fun onRequestPermissionsResult(

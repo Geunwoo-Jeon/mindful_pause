@@ -31,9 +31,9 @@ class MonitoringService : Service() {
     companion object {
         const val CHANNEL_ID = "mindful_question_channel"
         const val NOTIFICATION_ID = 1
-        const val TARGET_INTERVAL = 10 * 60 * 1000L // 10분 (밀리초)
+        // const val TARGET_INTERVAL = 10 * 60 * 1000L // 10분 (밀리초)
+        const val TARGET_INTERVAL = 30 * 1000L // 테스트용: 30초
         const val TICK_INTERVAL = 1000L // 1초마다 체크
-        // const val TARGET_INTERVAL = 30 * 1000L // 테스트용: 30초
 
         fun startService(context: Context) {
             val intent = Intent(context, MonitoringService::class.java)
@@ -131,7 +131,7 @@ class MonitoringService : Service() {
 
         return NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle("마인드풀 질문 실행 중")
-            .setContentText("스크린 타임: ${minutes}분 ${seconds}초 / 10분")
+            .setContentText("스크린 타임: ${seconds}초 / 30초 (테스트)")
             .setSmallIcon(android.R.drawable.ic_dialog_info)
             .setContentIntent(pendingIntent)
             .setOngoing(true)
@@ -188,9 +188,9 @@ class MonitoringService : Service() {
     private fun onTimerComplete() {
         android.util.Log.d("MonitoringService", "스크린 타임 10분 도달! 팝업 실행")
 
-        // TODO: Phase 3에서 PopupActivity 실행 로직 추가
-        // val intent = Intent(this, PopupActivity::class.java)
-        // intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        // startActivity(intent)
+        // PopupActivity 실행
+        val intent = Intent(this, com.geunwoo.jun.mindfulquestion.ui.PopupActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        startActivity(intent)
     }
 }
