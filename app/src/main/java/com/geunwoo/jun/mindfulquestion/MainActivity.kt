@@ -13,11 +13,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.geunwoo.jun.mindfulquestion.ui.theme.MindfulQuestionTheme
 import com.geunwoo.jun.mindfulquestion.utils.PermissionHelper
+import com.geunwoo.jun.mindfulquestion.services.MonitoringService
 
 class MainActivity : ComponentActivity() {
 
     private var overlayPermissionGranted by mutableStateOf(false)
     private var notificationPermissionGranted by mutableStateOf(false)
+    private var isServiceRunning by mutableStateOf(false)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,6 +33,7 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.padding(innerPadding),
                         overlayPermissionGranted = overlayPermissionGranted,
                         notificationPermissionGranted = notificationPermissionGranted,
+                        isServiceRunning = isServiceRunning,
                         onRequestOverlayPermission = {
                             PermissionHelper.requestOverlayPermission(this)
                         },
@@ -39,6 +42,14 @@ class MainActivity : ComponentActivity() {
                         },
                         onRequestAccessibilitySettings = {
                             PermissionHelper.openAccessibilitySettings(this)
+                        },
+                        onStartService = {
+                            MonitoringService.startService(this)
+                            isServiceRunning = true
+                        },
+                        onStopService = {
+                            MonitoringService.stopService(this)
+                            isServiceRunning = false
                         }
                     )
                 }
@@ -71,9 +82,12 @@ fun MainScreen(
     modifier: Modifier = Modifier,
     overlayPermissionGranted: Boolean,
     notificationPermissionGranted: Boolean,
+    isServiceRunning: Boolean,
     onRequestOverlayPermission: () -> Unit,
     onRequestNotificationPermission: () -> Unit,
-    onRequestAccessibilitySettings: () -> Unit
+    onRequestAccessibilitySettings: () -> Unit,
+    onStartService: () -> Unit,
+    onStopService: () -> Unit
 ) {
     Column(
         modifier = modifier
@@ -120,15 +134,29 @@ fun MainScreen(
 
         Spacer(modifier = Modifier.weight(1f))
 
-        // 서비스 시작 버튼 (나중에 구현)
-        Button(
-            onClick = { /* TODO: 서비스 시작 */ },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp),
-            enabled = overlayPermissionGranted && notificationPermissionGranted
-        ) {
-            Text("서비스 시작")
+        // 서비스 시작/중지 버튼
+        if (!isServiceRunning) {
+            Button(
+                onClick = onStartService,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp),
+                enabled = overlayPermissionGranted && notificationPermissionGranted
+            ) {
+                Text("서비스 시작")
+            }
+        } else {
+            Button(
+                onClick = onStopService,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.error
+                )
+            ) {
+                Text("서비스 중지")
+            }
         }
     }
 }
