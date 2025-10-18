@@ -167,7 +167,7 @@ class MonitoringService : Service() {
         return NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle("마음챙김 질문 실행 중")
             .setContentText(contentText)
-            .setSmallIcon(android.R.drawable.ic_dialog_info)
+            .setSmallIcon(com.geunwoo.jun.mindfulquestion.R.drawable.ic_notification_praying_hands)
             .setContentIntent(pendingIntent)
             .setOngoing(true)
             .build()
