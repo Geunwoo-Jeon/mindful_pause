@@ -34,8 +34,7 @@ class MonitoringService : Service() {
     companion object {
         const val CHANNEL_ID = "mindful_question_channel"
         const val NOTIFICATION_ID = 1
-        // const val TARGET_INTERVAL = 10 * 60 * 1000L // 10분 (밀리초)
-        const val TARGET_INTERVAL = 30 * 1000L // 테스트용: 30초
+        const val TARGET_INTERVAL = 10 * 60 * 1000L // 10분 (밀리초)
         const val TICK_INTERVAL = 1000L // 1초마다 체크
 
         private var instance: MonitoringService? = null
@@ -161,7 +160,7 @@ class MonitoringService : Service() {
             val remainingMinutes = ((pauseEndTime - System.currentTimeMillis()) / 1000 / 60).toInt()
             "일시중지 중 (${remainingMinutes}분 남음)"
         } else {
-            "스크린 타임: ${seconds}초 / 30초 (테스트)"
+            "스크린 타임: ${minutes}분 ${seconds}초 / 10분"
         }
 
         return NotificationCompat.Builder(this, CHANNEL_ID)
