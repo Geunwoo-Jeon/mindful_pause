@@ -15,6 +15,8 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.geunwoo.jun.mindfulquestion.ui.theme.MindfulQuestionTheme
+import com.geunwoo.jun.mindfulquestion.services.AppUsageAccessibilityService
+import com.geunwoo.jun.mindfulquestion.services.MonitoringService
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -23,6 +25,11 @@ class PopupActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        // 팝업이 표시됨을 알림
+        android.util.Log.d("PopupActivity", "팝업 시작 - 스크린타임 카운트 중지")
+        AppUsageAccessibilityService.setPopupShowing(true)
+        AppUsageAccessibilityService.setShouldShowPopupAgain(true)
 
         // 키보드가 화면을 밀어올리도록 설정
         window.setSoftInputMode(
@@ -54,6 +61,12 @@ class PopupActivity : ComponentActivity() {
                             // TODO: Phase 5에서 데이터베이스에 저장
                             android.util.Log.d("PopupActivity", "답변1: $answer1")
                             android.util.Log.d("PopupActivity", "답변2: $answer2")
+
+                            // 팝업 완료됨을 알림
+                            AppUsageAccessibilityService.setPopupShowing(false)
+                            AppUsageAccessibilityService.setShouldShowPopupAgain(false)
+                            MonitoringService.getInstance()?.notifyPopupCompleted()
+
                             finish() // 팝업 닫기
                         }
                     )
@@ -82,8 +95,8 @@ fun QuestionScreen(
     val coroutineScope = rememberCoroutineScope()
     val scrollState = rememberScrollState()
 
-    // 답변이 최소 30자 이상인지 확인
-    val isAnswerValid = answer.length >= 30
+    // 답변이 최소 15자 이상인지 확인
+    val isAnswerValid = answer.length >= 15
     val canSubmit = isButtonEnabled && isAnswerValid
 
     // 카운트다운 타이머
@@ -115,7 +128,7 @@ fun QuestionScreen(
 
             // 제목
             Text(
-                text = "마인드풀 질문 ${questionNumber}/2",
+                text = "마음챙김 질문 ${questionNumber}/2",
                 style = MaterialTheme.typography.headlineLarge,
                 textAlign = TextAlign.Center
             )
@@ -152,7 +165,7 @@ fun QuestionScreen(
                         maxLines = 10,
                         placeholder = { Text("답변을 입력하세요...") },
                         supportingText = {
-                            Text("${answer.length} / 최소 30자")
+                            Text("${answer.length} / 최소 15자")
                         },
                         isError = answer.isNotEmpty() && !isAnswerValid
                     )
@@ -170,7 +183,7 @@ fun QuestionScreen(
                 )
             } else if (!canSubmit) {
                 Text(
-                    text = "답변은 최소 30자 이상 작성해주세요",
+                    text = "답변은 최소 15자 이상 작성해주세요",
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.error
                 )
@@ -189,7 +202,7 @@ fun QuestionScreen(
                 Text(
                     text = when {
                         !isButtonEnabled -> "잠시만 기다려주세요... (${countdown}초)"
-                        !canSubmit -> "답변을 작성해주세요 (최소 30자)"
+                        !canSubmit -> "답변을 작성해주세요 (최소 15자)"
                         questionNumber == 1 -> "다음 질문으로"
                         else -> "제출"
                     },

@@ -14,11 +14,13 @@ import androidx.compose.ui.unit.dp
 import com.geunwoo.jun.mindfulquestion.ui.theme.MindfulQuestionTheme
 import com.geunwoo.jun.mindfulquestion.utils.PermissionHelper
 import com.geunwoo.jun.mindfulquestion.services.MonitoringService
+import com.geunwoo.jun.mindfulquestion.services.AppUsageAccessibilityService
 
 class MainActivity : ComponentActivity() {
 
     private var overlayPermissionGranted by mutableStateOf(false)
     private var notificationPermissionGranted by mutableStateOf(false)
+    private var accessibilityServiceEnabled by mutableStateOf(false)
     private var isServiceRunning by mutableStateOf(false)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,6 +35,7 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.padding(innerPadding),
                         overlayPermissionGranted = overlayPermissionGranted,
                         notificationPermissionGranted = notificationPermissionGranted,
+                        accessibilityServiceEnabled = accessibilityServiceEnabled,
                         isServiceRunning = isServiceRunning,
                         onRequestOverlayPermission = {
                             PermissionHelper.requestOverlayPermission(this)
@@ -65,6 +68,7 @@ class MainActivity : ComponentActivity() {
     private fun checkPermissions() {
         overlayPermissionGranted = PermissionHelper.hasOverlayPermission(this)
         notificationPermissionGranted = PermissionHelper.hasNotificationPermission(this)
+        accessibilityServiceEnabled = AppUsageAccessibilityService.isServiceEnabled()
 
         // 권한이 모두 허용되면 자동으로 서비스 시작
         if (overlayPermissionGranted && notificationPermissionGranted && !isServiceRunning) {
@@ -88,6 +92,7 @@ fun MainScreen(
     modifier: Modifier = Modifier,
     overlayPermissionGranted: Boolean,
     notificationPermissionGranted: Boolean,
+    accessibilityServiceEnabled: Boolean,
     isServiceRunning: Boolean,
     onRequestOverlayPermission: () -> Unit,
     onRequestNotificationPermission: () -> Unit,
@@ -103,7 +108,7 @@ fun MainScreen(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         Text(
-            text = "마인드풀 질문",
+            text = "마음챙김 질문",
             style = MaterialTheme.typography.headlineLarge
         )
 
@@ -133,8 +138,8 @@ fun MainScreen(
 
         PermissionCard(
             title = "접근성 서비스",
-            description = "앱 사용 감지를 위해 필요합니다.",
-            isGranted = false, // 나중에 구현
+            description = "설정 > 접근성 > 설치된 서비스 > 마음챙김 질문 > 사용으로 변경해주세요.",
+            isGranted = accessibilityServiceEnabled,
             onRequestPermission = onRequestAccessibilitySettings
         )
 

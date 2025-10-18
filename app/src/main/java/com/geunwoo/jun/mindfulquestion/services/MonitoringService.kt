@@ -24,6 +24,7 @@ class MonitoringService : Service() {
     private var accumulatedTime = 0L // 누적 스크린 타임 (밀리초)
     private var lastTickTime = 0L
     private var isScreenOn = false
+    private var shouldShowPopup = false
 
     private lateinit var powerManager: PowerManager
     private lateinit var screenReceiver: BroadcastReceiver
@@ -34,6 +35,10 @@ class MonitoringService : Service() {
         // const val TARGET_INTERVAL = 10 * 60 * 1000L // 10분 (밀리초)
         const val TARGET_INTERVAL = 30 * 1000L // 테스트용: 30초
         const val TICK_INTERVAL = 1000L // 1초마다 체크
+
+        private var instance: MonitoringService? = null
+
+        fun getInstance(): MonitoringService? = instance
 
         fun startService(context: Context) {
             val intent = Intent(context, MonitoringService::class.java)
@@ -52,6 +57,7 @@ class MonitoringService : Service() {
 
     override fun onCreate() {
         super.onCreate()
+        instance = this
         createNotificationChannel()
         powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
         registerScreenReceiver()
@@ -72,6 +78,7 @@ class MonitoringService : Service() {
 
     override fun onDestroy() {
         super.onDestroy()
+        instance = null
         stopTimer()
         unregisterReceiver(screenReceiver)
     }
@@ -106,7 +113,7 @@ class MonitoringService : Service() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 CHANNEL_ID,
-                "마인드풀 질문 서비스",
+                "마음챙김 질문 서비스",
                 NotificationManager.IMPORTANCE_LOW
             ).apply {
                 description = "자기 성찰을 위한 질문 알림"
@@ -130,7 +137,7 @@ class MonitoringService : Service() {
         val seconds = ((accumulatedTime / 1000) % 60).toInt()
 
         return NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle("마인드풀 질문 실행 중")
+            .setContentTitle("마음챙김 질문 실행 중")
             .setContentText("스크린 타임: ${seconds}초 / 30초 (테스트)")
             .setSmallIcon(android.R.drawable.ic_dialog_info)
             .setContentIntent(pendingIntent)
@@ -150,21 +157,26 @@ class MonitoringService : Service() {
             override fun run() {
                 val currentTime = System.currentTimeMillis()
 
-                // 화면이 켜져 있을 때만 시간 누적
-                if (isScreenOn) {
+                // 화면이 켜져 있고, 팝업이 표시되지 않았을 때만 시간 누적
+                if (isScreenOn && !shouldShowPopup) {
                     val elapsedTime = currentTime - lastTickTime
                     accumulatedTime += elapsedTime
-
-                    // 알림 업데이트 (5초마다)
-                    if (accumulatedTime % 5000 < TICK_INTERVAL) {
-                        updateNotification()
+                    android.util.Log.d("MonitoringService", "스크린타임 카운트 중: ${accumulatedTime / 1000}초")
+                } else {
+                    if (shouldShowPopup) {
+                        android.util.Log.d("MonitoringService", "팝업 표시 중 - 스크린타임 카운트 중지")
                     }
+                }
 
-                    // 10분 도달 시 팝업 실행
-                    if (accumulatedTime >= TARGET_INTERVAL) {
-                        onTimerComplete()
-                        accumulatedTime = 0 // 타이머 리셋
-                    }
+                // 알림 업데이트 (5초마다)
+                if (accumulatedTime % 5000 < TICK_INTERVAL) {
+                    updateNotification()
+                }
+
+                // 10분 도달 시 팝업 실행
+                if (accumulatedTime >= TARGET_INTERVAL) {
+                    onTimerComplete()
+                    accumulatedTime = 0 // 타이머 리셋
                 }
 
                 lastTickTime = currentTime
@@ -186,11 +198,23 @@ class MonitoringService : Service() {
     }
 
     private fun onTimerComplete() {
-        android.util.Log.d("MonitoringService", "스크린 타임 10분 도달! 팝업 실행")
+        android.util.Log.d("MonitoringService", "스크린 타임 10분 도달! 팝업 실행 - 스크린타임 중지")
+
+        shouldShowPopup = true
+        AppUsageAccessibilityService.setShouldShowPopupAgain(true)
+        AppUsageAccessibilityService.setPopupShowing(true)
 
         // PopupActivity 실행
+        showPopup()
+    }
+
+    private fun showPopup() {
         val intent = Intent(this, com.geunwoo.jun.mindfulquestion.ui.PopupActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
         startActivity(intent)
+    }
+
+    fun notifyPopupCompleted() {
+        shouldShowPopup = false
     }
 }

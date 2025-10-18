@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">MindfulQuestion</string>
+    <string name="app_name">MindfulPause</string>
+    <string name="accessibility_service_description">앱 사용을 감지하여 자기 성찰 질문을 제공합니다. 이 서비스는 현재 사용 중인 앱을 확인하고, 질문 팝업이 표시될 때 이를 감지합니다.</string>
 </resources>
