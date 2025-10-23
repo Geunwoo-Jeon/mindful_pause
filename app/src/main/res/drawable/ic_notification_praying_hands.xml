@@ -4,7 +4,18 @@
     android:height="24dp"
     android:viewportWidth="24"
     android:viewportHeight="24">
+    <!-- 일시정지 바 + 작은 미소 -->
+    <!-- 중앙: 12, 바 높이: 9, 바 너비: 3, 간격: 1.5 (75% of 2) -->
+    <!-- 왼쪽 일시정지 바 (간격 좁힘) -->
     <path
         android:fillColor="#FFFFFFFF"
-        android:pathData="M12,8.5l-3.5,-5.5c-0.55,-0.87 -1.69,-1.13 -2.56,-0.58C5.07,2.87 4.81,4.01 5.36,4.88L9,11V21c0,0.55 0.45,1 1,1h0.5c0.55,0 1,-0.45 1,-1v-6h1v6c0,0.55 0.45,1 1,1H14c0.55,0 1,-0.45 1,-1V11l3.64,-6.12c0.55,-0.87 0.29,-2.01 -0.58,-2.56c-0.87,-0.55 -2.01,-0.29 -2.56,0.58L12,8.5z"/>
+        android:pathData="M8.25,7.5h3v9h-3z"/>
+    <!-- 오른쪽 일시정지 바 (간격 좁힘) -->
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M12.75,7.5h3v9h-3z"/>
+    <!-- 작고 짧은 미소 (입꼬리 올라간 형태, 가로 2/3) -->
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M 10,17 Q 12,18.5 14,17 L 14,18 Q 12,19.5 10,18 Z"/>
 </vector>

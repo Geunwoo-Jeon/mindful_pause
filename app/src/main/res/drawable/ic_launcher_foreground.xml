@@ -3,13 +3,18 @@
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
-    <group
-        android:scaleX="2.8"
-        android:scaleY="2.8"
-        android:translateX="24"
-        android:translateY="24">
-        <path
-            android:fillColor="#6750A4"
-            android:pathData="M12,8.5l-3.5,-5.5c-0.55,-0.87 -1.69,-1.13 -2.56,-0.58C5.07,2.87 4.81,4.01 5.36,4.88L9,11V21c0,0.55 0.45,1 1,1h0.5c0.55,0 1,-0.45 1,-1v-6h1v6c0,0.55 0.45,1 1,1H14c0.55,0 1,-0.45 1,-1V11l3.64,-6.12c0.55,-0.87 0.29,-2.01 -0.58,-2.56c-0.87,-0.55 -2.01,-0.29 -2.56,0.58L12,8.5z"/>
-    </group>
+    <!-- 일시정지 바 + 작은 미소 -->
+    <!-- 중앙: 54, 바 높이: 38, 바 너비: 10, 간격: 6 (75% of 8) -->
+    <!-- 왼쪽 일시정지 바 (간격 좁힘) -->
+    <path
+        android:fillColor="#2E7D32"
+        android:pathData="M38,35h10v38h-10z"/>
+    <!-- 오른쪽 일시정지 바 (간격 좁힘) -->
+    <path
+        android:fillColor="#2E7D32"
+        android:pathData="M60,35h10v38h-10z"/>
+    <!-- 작고 짧은 미소 (입꼬리 올라간 형태, 가로 2/3) -->
+    <path
+        android:fillColor="#2E7D32"
+        android:pathData="M 46,76 Q 54,83 62,76 L 62,79 Q 54,86 46,79 Z"/>
 </vector>

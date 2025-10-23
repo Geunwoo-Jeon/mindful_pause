@@ -8,6 +8,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
@@ -35,10 +36,15 @@ class MainActivity : ComponentActivity() {
     private var answerList by mutableStateOf<List<Answer>>(emptyList())
     private var isServicePaused by mutableStateOf(false)
     private var remainingPauseTime by mutableStateOf(0L)
+    private var selectedInterval by mutableStateOf(10)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        // 저장된 간격 불러오기
+        selectedInterval = MonitoringService.getInterval(this)
+
         checkPermissions()
         loadAnswers()
 
@@ -53,6 +59,7 @@ class MainActivity : ComponentActivity() {
                         answerList = answerList,
                         isServicePaused = isServicePaused,
                         remainingPauseTime = remainingPauseTime,
+                        selectedInterval = selectedInterval,
                         onRequestOverlayPermission = {
                             PermissionHelper.requestOverlayPermission(this)
                         },
@@ -76,6 +83,10 @@ class MainActivity : ComponentActivity() {
                                 database.answerDao().delete(answer)
                                 loadAnswers()
                             }
+                        },
+                        onIntervalChange = { interval ->
+                            selectedInterval = interval
+                            MonitoringService.updateInterval(this, interval)
                         }
                     )
                 }
@@ -132,14 +143,17 @@ fun MainScreen(
     answerList: List<Answer>,
     isServicePaused: Boolean,
     remainingPauseTime: Long,
+    selectedInterval: Int,
     onRequestOverlayPermission: () -> Unit,
     onRequestNotificationPermission: () -> Unit,
     onRequestAccessibilitySettings: () -> Unit,
     onPauseService: (Int) -> Unit,
     onResumeService: () -> Unit,
-    onDeleteAnswer: (Answer) -> Unit
+    onDeleteAnswer: (Answer) -> Unit,
+    onIntervalChange: (Int) -> Unit
 ) {
     var showPauseDialog by remember { mutableStateOf(false) }
+    var showIntervalDialog by remember { mutableStateOf(false) }
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -148,14 +162,18 @@ fun MainScreen(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         Text(
-            text = "마음챙김 질문",
+            text = "잠시, 멈춤",
             style = MaterialTheme.typography.headlineLarge
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        val intervalText = when (selectedInterval) {
+            0 -> "30초마다"
+            else -> "${selectedInterval}분마다"
+        }
         Text(
-            text = "10분마다 자기 성찰을 위한 질문을 받습니다.",
+            text = "${intervalText} 현재의 자신을 돌아볼 수 있는 질문을 받습니다.",
             style = MaterialTheme.typography.bodyLarge
         )
 
@@ -187,7 +205,7 @@ fun MainScreen(
             if (!accessibilityServiceEnabled) {
                 PermissionCard(
                     title = "접근성 서비스",
-                    description = "설정 > 접근성 > 설치된 서비스 > 마음챙김 질문 > 사용으로 변경해주세요.",
+                    description = "설정 > 접근성 > 설치된 서비스 > 잠시, 멈춤 > 사용으로 변경해주세요.",
                     isGranted = accessibilityServiceEnabled,
                     onRequestPermission = onRequestAccessibilitySettings
                 )
@@ -195,12 +213,6 @@ fun MainScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
         }
-
-        // 답변 기록 섹션
-        Text(
-            text = "답변 기록 (${answerList.size}개)",
-            style = MaterialTheme.typography.titleLarge
-        )
 
         // 답변 목록
         if (answerList.isEmpty()) {
@@ -210,7 +222,16 @@ fun MainScreen(
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         } else {
+            val listState = rememberLazyListState()
+
+            LaunchedEffect(answerList.size) {
+                if (answerList.isNotEmpty()) {
+                    listState.scrollToItem(answerList.size - 1)
+                }
+            }
+
             LazyColumn(
+                state = listState,
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxWidth(),
@@ -225,7 +246,19 @@ fun MainScreen(
             }
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(8.dp))
+
+        // 질문 간격 변경 버튼
+        Button(
+            onClick = { showIntervalDialog = true },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(56.dp)
+        ) {
+            Text("질문 간격 변경")
+        }
+
+        Spacer(modifier = Modifier.height(4.dp))
 
         // 일시중지 버튼
         if (overlayPermissionGranted && notificationPermissionGranted) {
@@ -277,6 +310,65 @@ fun MainScreen(
         }
     }
 
+    // 질문 간격 선택 다이얼로그
+    if (showIntervalDialog) {
+        AlertDialog(
+            onDismissRequest = { showIntervalDialog = false },
+            title = { Text("질문 간격 선택") },
+            text = {
+                Column {
+                    Text("얼마나 자주 질문을 받으시겠습니까?")
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Button(
+                        onClick = {
+                            onIntervalChange(0)
+                            showIntervalDialog = false
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text("30초 (테스트용)")
+                    }
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Button(
+                        onClick = {
+                            onIntervalChange(10)
+                            showIntervalDialog = false
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text("10분")
+                    }
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Button(
+                        onClick = {
+                            onIntervalChange(20)
+                            showIntervalDialog = false
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text("20분")
+                    }
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Button(
+                        onClick = {
+                            onIntervalChange(30)
+                            showIntervalDialog = false
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text("30분")
+                    }
+                }
+            },
+            confirmButton = {},
+            dismissButton = {
+                TextButton(onClick = { showIntervalDialog = false }) {
+                    Text("취소")
+                }
+            }
+        )
+    }
+
     // 일시중지 시간 선택 다이얼로그
     if (showPauseDialog) {
         AlertDialog(
@@ -314,6 +406,16 @@ fun MainScreen(
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Text("2시간")
+                    }
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Button(
+                        onClick = {
+                            onPauseService(180)
+                            showPauseDialog = false
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text("3시간")
                     }
                 }
             },
@@ -378,10 +480,8 @@ fun AnswerCard(
     answer: Answer,
     onDelete: () -> Unit
 ) {
-    val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
+    val dateFormat = SimpleDateFormat("yyyy년 MM월 dd일 HH:mm", Locale.getDefault())
     val dateString = dateFormat.format(Date(answer.timestamp))
-
-    var showDeleteDialog by remember { mutableStateOf(false) }
 
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -390,29 +490,15 @@ fun AnswerCard(
         )
     ) {
         Column(
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier.padding(12.dp)
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = dateString,
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.onSecondaryContainer
-                )
+            Text(
+                text = dateString,
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSecondaryContainer
+            )
 
-                IconButton(onClick = { showDeleteDialog = true }) {
-                    Icon(
-                        imageVector = Icons.Default.Delete,
-                        contentDescription = "삭제",
-                        tint = MaterialTheme.colorScheme.error
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(2.dp))
 
             Text(
                 text = "현재 하고 있는 일:",
@@ -438,29 +524,5 @@ fun AnswerCard(
                 color = MaterialTheme.colorScheme.onSecondaryContainer
             )
         }
-    }
-
-    // 삭제 확인 다이얼로그
-    if (showDeleteDialog) {
-        AlertDialog(
-            onDismissRequest = { showDeleteDialog = false },
-            title = { Text("답변 삭제") },
-            text = { Text("이 답변을 삭제하시겠습니까?") },
-            confirmButton = {
-                TextButton(
-                    onClick = {
-                        onDelete()
-                        showDeleteDialog = false
-                    }
-                ) {
-                    Text("삭제", color = MaterialTheme.colorScheme.error)
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = { showDeleteDialog = false }) {
-                    Text("취소")
-                }
-            }
-        )
     }
 }

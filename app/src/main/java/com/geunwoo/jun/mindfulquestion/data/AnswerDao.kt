@@ -17,7 +17,7 @@ interface AnswerDao {
     @Delete
     suspend fun delete(answer: Answer)
 
-    @Query("SELECT * FROM answers ORDER BY timestamp DESC")
+    @Query("SELECT * FROM answers ORDER BY timestamp ASC")
     suspend fun getAllAnswers(): List<Answer>
 
     @Query("SELECT * FROM answers WHERE timestamp >= :startTime AND timestamp <= :endTime ORDER BY timestamp DESC")

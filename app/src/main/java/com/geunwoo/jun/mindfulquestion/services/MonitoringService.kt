@@ -27,6 +27,7 @@ class MonitoringService : Service() {
     private var shouldShowPopup = false
     private var isPaused = false
     private var pauseEndTime = 0L // 일시중지 종료 시간
+    private var targetInterval = 10 * 60 * 1000L // 질문 간격 (밀리초)
 
     private lateinit var powerManager: PowerManager
     private lateinit var screenReceiver: BroadcastReceiver
@@ -34,8 +35,9 @@ class MonitoringService : Service() {
     companion object {
         const val CHANNEL_ID = "mindful_question_channel"
         const val NOTIFICATION_ID = 1
-        const val TARGET_INTERVAL = 10 * 60 * 1000L // 10분 (밀리초)
         const val TICK_INTERVAL = 1000L // 1초마다 체크
+        private const val PREFS_NAME = "mindful_question_prefs"
+        private const val KEY_INTERVAL = "interval_minutes"
 
         private var instance: MonitoringService? = null
 
@@ -73,11 +75,34 @@ class MonitoringService : Service() {
             val remaining = instance.pauseEndTime - System.currentTimeMillis()
             return if (remaining > 0) remaining else 0
         }
+
+        fun updateInterval(context: Context, intervalMinutes: Int) {
+            // SharedPreferences에 저장
+            val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+            prefs.edit().putInt(KEY_INTERVAL, intervalMinutes).apply()
+
+            // 실행 중인 서비스에 반영
+            getInstance()?.setInterval(intervalMinutes)
+        }
+
+        fun getInterval(context: Context): Int {
+            val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+            return prefs.getInt(KEY_INTERVAL, 10) // 기본값 10분
+        }
     }
 
     override fun onCreate() {
         super.onCreate()
         instance = this
+
+        // SharedPreferences에서 간격 설정 불러오기
+        val intervalMinutes = getInterval(this)
+        targetInterval = if (intervalMinutes == 0) {
+            30 * 1000L // 30초 (테스트용)
+        } else {
+            intervalMinutes * 60 * 1000L
+        }
+
         createNotificationChannel()
         powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
         registerScreenReceiver()
@@ -133,7 +158,7 @@ class MonitoringService : Service() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 CHANNEL_ID,
-                "마음챙김 질문 서비스",
+                "잠시, 멈춤 서비스",
                 NotificationManager.IMPORTANCE_LOW
             ).apply {
                 description = "자기 성찰을 위한 질문 알림"
@@ -156,15 +181,20 @@ class MonitoringService : Service() {
         val minutes = (accumulatedTime / 1000 / 60).toInt()
         val seconds = ((accumulatedTime / 1000) % 60).toInt()
 
+        val intervalDisplay = if (targetInterval < 60 * 1000) {
+            "${targetInterval / 1000}초"
+        } else {
+            "${(targetInterval / 1000 / 60).toInt()}분"
+        }
         val contentText = if (isPaused) {
             val remainingMinutes = ((pauseEndTime - System.currentTimeMillis()) / 1000 / 60).toInt()
             "일시중지 중 (${remainingMinutes}분 남음)"
         } else {
-            "스크린 타임: ${minutes}분 ${seconds}초 / 10분"
+            "스크린 타임: ${minutes}분 ${seconds}초 / ${intervalDisplay}"
         }
 
         return NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle("마음챙김 질문 실행 중")
+            .setContentTitle("잠시, 멈춤 실행 중")
             .setContentText(contentText)
             .setSmallIcon(com.geunwoo.jun.mindfulquestion.R.drawable.ic_notification_praying_hands)
             .setContentIntent(pendingIntent)
@@ -218,8 +248,8 @@ class MonitoringService : Service() {
                     updateNotification()
                 }
 
-                // 10분 도달 시 팝업 실행
-                if (accumulatedTime >= TARGET_INTERVAL) {
+                // 설정된 간격 도달 시 팝업 실행
+                if (accumulatedTime >= targetInterval) {
                     onTimerComplete()
                     accumulatedTime = 0 // 타이머 리셋
                 }
@@ -243,7 +273,12 @@ class MonitoringService : Service() {
     }
 
     private fun onTimerComplete() {
-        android.util.Log.d("MonitoringService", "스크린 타임 10분 도달! 팝업 실행 - 스크린타임 중지")
+        val intervalDisplay = if (targetInterval < 60 * 1000) {
+            "${targetInterval / 1000}초"
+        } else {
+            "${(targetInterval / 1000 / 60).toInt()}분"
+        }
+        android.util.Log.d("MonitoringService", "스크린 타임 ${intervalDisplay} 도달! 팝업 실행 - 스크린타임 중지")
 
         shouldShowPopup = true
         AppUsageAccessibilityService.setShouldShowPopupAgain(true)
@@ -274,6 +309,17 @@ class MonitoringService : Service() {
         isPaused = false
         pauseEndTime = 0L
         android.util.Log.d("MonitoringService", "일시중지 해제")
+        updateNotification()
+    }
+
+    fun setInterval(intervalMinutes: Int) {
+        targetInterval = if (intervalMinutes == 0) {
+            30 * 1000L // 30초 (테스트용)
+        } else {
+            intervalMinutes * 60 * 1000L
+        }
+        val displayText = if (intervalMinutes == 0) "30초" else "${intervalMinutes}분"
+        android.util.Log.d("MonitoringService", "질문 간격 변경: $displayText")
         updateNotification()
     }
 }
