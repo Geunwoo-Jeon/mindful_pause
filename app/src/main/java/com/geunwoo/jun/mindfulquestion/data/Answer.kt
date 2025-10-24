@@ -8,8 +8,7 @@ data class Answer(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
     val timestamp: Long,  // 답변 작성 시각
-    val question1: String,  // "안녕하세요. 현재 당신은 무엇을 하고 있으며, 왜 그 일을 하고 계신가요?"
-    val answer1: String,
-    val question2: String,  // "당신은 지금부터 무슨 일을 할 것이며, 왜 그 일을 하려고 하시나요?"
-    val answer2: String
+    val questionSetVersion: String,  // "v2", "v3", ...
+    val questionLabelsJson: String,  // JSON: ["현재의 감정:", "그 이유:", ...]
+    val answersJson: String  // JSON: ["평온합니다", "모든 일이 잘 되고 있습니다", ...]
 )

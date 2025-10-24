@@ -9,8 +9,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -27,6 +25,7 @@ import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import org.json.JSONArray
 
 class MainActivity : ComponentActivity() {
 
@@ -154,6 +153,8 @@ fun MainScreen(
 ) {
     var showPauseDialog by remember { mutableStateOf(false) }
     var showIntervalDialog by remember { mutableStateOf(false) }
+    var showIntervalChangedDialog by remember { mutableStateOf(false) }
+    var changedIntervalText by remember { mutableStateOf("") }
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -173,7 +174,7 @@ fun MainScreen(
             else -> "${selectedInterval}분마다"
         }
         Text(
-            text = "${intervalText} 현재의 자신을 돌아볼 수 있는 질문을 받습니다.",
+            text = "${intervalText} 자신의 감정을 돌볼 수 있는 질문을 받습니다.",
             style = MaterialTheme.typography.bodyLarge
         )
 
@@ -322,7 +323,9 @@ fun MainScreen(
                     Button(
                         onClick = {
                             onIntervalChange(0)
+                            changedIntervalText = "30초로"
                             showIntervalDialog = false
+                            showIntervalChangedDialog = true
                         },
                         modifier = Modifier.fillMaxWidth()
                     ) {
@@ -332,7 +335,9 @@ fun MainScreen(
                     Button(
                         onClick = {
                             onIntervalChange(10)
+                            changedIntervalText = "10분으로"
                             showIntervalDialog = false
+                            showIntervalChangedDialog = true
                         },
                         modifier = Modifier.fillMaxWidth()
                     ) {
@@ -342,7 +347,9 @@ fun MainScreen(
                     Button(
                         onClick = {
                             onIntervalChange(20)
+                            changedIntervalText = "20분으로"
                             showIntervalDialog = false
+                            showIntervalChangedDialog = true
                         },
                         modifier = Modifier.fillMaxWidth()
                     ) {
@@ -352,7 +359,9 @@ fun MainScreen(
                     Button(
                         onClick = {
                             onIntervalChange(30)
+                            changedIntervalText = "30분으로"
                             showIntervalDialog = false
+                            showIntervalChangedDialog = true
                         },
                         modifier = Modifier.fillMaxWidth()
                     ) {
@@ -364,6 +373,19 @@ fun MainScreen(
             dismissButton = {
                 TextButton(onClick = { showIntervalDialog = false }) {
                     Text("취소")
+                }
+            }
+        )
+    }
+
+    // 질문 간격 변경 완료 다이얼로그
+    if (showIntervalChangedDialog) {
+        AlertDialog(
+            onDismissRequest = { showIntervalChangedDialog = false },
+            text = { Text("질문 간격을 ${changedIntervalText} 변경하였습니다.") },
+            confirmButton = {
+                TextButton(onClick = { showIntervalChangedDialog = false }) {
+                    Text("확인")
                 }
             }
         )
@@ -498,31 +520,44 @@ fun AnswerCard(
                 color = MaterialTheme.colorScheme.onSecondaryContainer
             )
 
-            Spacer(modifier = Modifier.height(2.dp))
-
-            Text(
-                text = "현재 하고 있는 일:",
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onSecondaryContainer
-            )
-            Text(
-                text = answer.answer1,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSecondaryContainer
-            )
-
             Spacer(modifier = Modifier.height(8.dp))
 
-            Text(
-                text = "앞으로 할 일:",
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onSecondaryContainer
-            )
-            Text(
-                text = answer.answer2,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSecondaryContainer
-            )
+            // JSON 형식으로 저장된 답변 표시
+            val labelsAndAnswers = remember(answer) {
+                try {
+                    val labels = JSONArray(answer.questionLabelsJson)
+                    val answers = JSONArray(answer.answersJson)
+                    (0 until labels.length()).map { i ->
+                        labels.getString(i) to answers.optString(i, "")
+                    }
+                } catch (e: Exception) {
+                    null
+                }
+            }
+
+            if (labelsAndAnswers != null) {
+                labelsAndAnswers.forEachIndexed { index, (label, answerText) ->
+                    if (index > 0) {
+                        Spacer(modifier = Modifier.height(8.dp))
+                    }
+                    Text(
+                        text = label,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer
+                    )
+                    Text(
+                        text = answerText,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer
+                    )
+                }
+            } else {
+                Text(
+                    text = "답변을 표시할 수 없습니다.",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.error
+                )
+            }
         }
     }
 }

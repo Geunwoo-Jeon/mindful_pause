@@ -19,7 +19,8 @@ abstract class AppDatabase : RoomDatabase() {
                     context.applicationContext,
                     AppDatabase::class.java,
                     "mindful_pause_database"
-                ).build()
+                )
+                    .build()
                 INSTANCE = instance
                 instance
             }
