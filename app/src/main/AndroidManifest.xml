@@ -8,6 +8,8 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS"
+        tools:ignore="ProtectedPermissions"/>
 
     <application
         android:allowBackup="true"
@@ -29,6 +31,24 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- Goal Setup Activity (목표 설정 화면) -->
+        <activity
+            android:name=".ui.GoalSetupActivity"
+            android:exported="false"
+            android:theme="@style/Theme.MindfulQuestion" />
+
+        <!-- Goal Edit Activity (목표 수정 화면) -->
+        <activity
+            android:name=".ui.GoalEditActivity"
+            android:exported="false"
+            android:theme="@style/Theme.MindfulQuestion" />
+
+        <!-- Answer History Activity (답변 기록 화면) -->
+        <activity
+            android:name=".ui.AnswerHistoryActivity"
+            android:exported="false"
+            android:theme="@style/Theme.MindfulQuestion" />
 
         <!-- Popup Activity (전체 화면 팝업) -->
         <activity

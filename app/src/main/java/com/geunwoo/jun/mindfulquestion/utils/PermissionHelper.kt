@@ -2,6 +2,7 @@ package com.geunwoo.jun.mindfulquestion.utils
 
 import android.Manifest
 import android.app.Activity
+import android.app.AppOpsManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -16,6 +17,7 @@ object PermissionHelper {
     const val NOTIFICATION_PERMISSION_CODE = 100
     const val OVERLAY_PERMISSION_CODE = 101
     const val ACCESSIBILITY_SETTINGS_CODE = 102
+    const val USAGE_STATS_PERMISSION_CODE = 103
 
     /**
      * 오버레이 권한 확인
@@ -79,6 +81,36 @@ object PermissionHelper {
     fun openAccessibilitySettings(activity: Activity) {
         val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
         activity.startActivityForResult(intent, ACCESSIBILITY_SETTINGS_CODE)
+    }
+
+    /**
+     * 사용 접근 권한 확인 (UsageStats)
+     */
+    fun hasUsageStatsPermission(context: Context): Boolean {
+        val appOps = context.getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager
+        val mode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            appOps.unsafeCheckOpNoThrow(
+                AppOpsManager.OPSTR_GET_USAGE_STATS,
+                android.os.Process.myUid(),
+                context.packageName
+            )
+        } else {
+            @Suppress("DEPRECATION")
+            appOps.checkOpNoThrow(
+                AppOpsManager.OPSTR_GET_USAGE_STATS,
+                android.os.Process.myUid(),
+                context.packageName
+            )
+        }
+        return mode == AppOpsManager.MODE_ALLOWED
+    }
+
+    /**
+     * 사용 접근 권한 요청 화면으로 이동
+     */
+    fun requestUsageStatsPermission(activity: Activity) {
+        val intent = Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS)
+        activity.startActivityForResult(intent, USAGE_STATS_PERMISSION_CODE)
     }
 
     /**

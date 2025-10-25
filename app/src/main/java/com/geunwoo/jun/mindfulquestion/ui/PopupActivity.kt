@@ -8,26 +8,30 @@ import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.geunwoo.jun.mindfulquestion.ui.theme.MindfulQuestionTheme
+import com.geunwoo.jun.mindfulquestion.ui.theme.*
 import com.geunwoo.jun.mindfulquestion.services.AppUsageAccessibilityService
 import com.geunwoo.jun.mindfulquestion.services.MonitoringService
-import com.geunwoo.jun.mindfulquestion.data.AppDatabase
-import com.geunwoo.jun.mindfulquestion.data.Answer
 import com.geunwoo.jun.mindfulquestion.data.QuestionSet
 import com.geunwoo.jun.mindfulquestion.data.QuestionStep
+import com.geunwoo.jun.mindfulquestion.data.AppDatabase
+import com.geunwoo.jun.mindfulquestion.data.Goal
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import org.json.JSONArray
 
 class PopupActivity : ComponentActivity() {
+
+    private var currentGoal by mutableStateOf<Goal?>(null)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,6 +42,14 @@ class PopupActivity : ComponentActivity() {
         AppUsageAccessibilityService.setPopupShowing(true)
         AppUsageAccessibilityService.setShouldShowPopupAgain(true)
 
+        // 목표 불러오기
+        lifecycleScope.launch {
+            val database = AppDatabase.getDatabase(this@PopupActivity)
+            database.goalDao().getGoal().collect { goal ->
+                currentGoal = goal
+            }
+        }
+
         // 키보드가 화면을 밀어올리도록 설정
         window.setSoftInputMode(
             android.view.WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
@@ -47,33 +59,33 @@ class PopupActivity : ComponentActivity() {
             MindfulQuestionTheme {
                 QuestionSetFlow(
                     questionSet = QuestionSet.DEFAULT_V2,
-                    onComplete = { labels, answers ->
-                        saveAnswers(labels, answers)
+                    currentGoal = currentGoal,
+                    onComplete = { questions, answers ->
+                        // 답변 저장
+                        lifecycleScope.launch {
+                            val database = AppDatabase.getDatabase(this@PopupActivity)
+                            val answerRecord = com.geunwoo.jun.mindfulquestion.data.AnswerRecord(
+                                timestamp = System.currentTimeMillis(),
+                                question1 = questions.getOrNull(0) ?: "",
+                                answer1 = answers.getOrNull(0) ?: "",
+                                question2 = questions.getOrNull(1) ?: "",
+                                answer2 = answers.getOrNull(1) ?: "",
+                                question3 = questions.getOrNull(2) ?: "",
+                                answer3 = answers.getOrNull(2) ?: ""
+                            )
+                            database.answerRecordDao().insert(answerRecord)
+                        }
+
+                        // 팝업 완료됨을 알림
+                        AppUsageAccessibilityService.setPopupShowing(false)
+                        AppUsageAccessibilityService.setShouldShowPopupAgain(false)
+                        MonitoringService.getInstance()?.notifyPopupCompleted()
+
+                        android.util.Log.d("PopupActivity", "질문 완료 및 답변 저장")
+                        finish() // 팝업 닫기
                     }
                 )
             }
-        }
-    }
-
-    private fun saveAnswers(labels: List<String>, answers: List<String>) {
-        lifecycleScope.launch {
-            val database = AppDatabase.getDatabase(this@PopupActivity)
-            val answerEntity = Answer(
-                timestamp = System.currentTimeMillis(),
-                questionSetVersion = "v2",
-                questionLabelsJson = JSONArray(labels).toString(),
-                answersJson = JSONArray(answers).toString()
-            )
-
-            database.answerDao().insert(answerEntity)
-            android.util.Log.d("PopupActivity", "답변 저장 완료: $answers")
-
-            // 팝업 완료됨을 알림
-            AppUsageAccessibilityService.setPopupShowing(false)
-            AppUsageAccessibilityService.setShouldShowPopupAgain(false)
-            MonitoringService.getInstance()?.notifyPopupCompleted()
-
-            finish() // 팝업 닫기
         }
     }
 
@@ -87,11 +99,14 @@ class PopupActivity : ComponentActivity() {
 @Composable
 fun QuestionSetFlow(
     questionSet: QuestionSet,
-    onComplete: (labels: List<String>, answers: List<String>) -> Unit
+    currentGoal: Goal?,
+    onComplete: (questions: List<String>, answers: List<String>) -> Unit
 ) {
     var currentStepIndex by remember { mutableStateOf(0) }
-    val answers = remember { mutableStateMapOf<Int, String>() }
-    val labels = remember { mutableStateListOf<String>() }
+
+    // 답변 저장을 위한 상태
+    val answers = remember { mutableStateListOf<String>() }
+    val questions = remember { mutableStateListOf<String>() }
 
     // 답변 단계 인덱스 계산
     val inputSteps = questionSet.steps.filterIsInstance<QuestionStep.InputStep>()
@@ -118,7 +133,7 @@ fun QuestionSetFlow(
                             if (stepIndex < questionSet.steps.size - 1) {
                                 currentStepIndex++
                             } else {
-                                onComplete(labels, answers.values.toList())
+                                onComplete(questions.toList(), answers.toList())
                             }
                         }
                     )
@@ -128,16 +143,19 @@ fun QuestionSetFlow(
                     InputStepScreen(
                         questionText = step.questionText,
                         hintText = step.hintText,
-                        minLength = step.minLength,
-                        initialAnswer = answers[answerIndex] ?: "",
                         stepNumber = answerIndex + 1,
                         totalSteps = inputSteps.size,
+                        currentGoal = currentGoal,
                         onNext = { answer ->
-                            answers[answerIndex] = answer
-                            if (answerIndex >= labels.size) {
-                                labels.add(step.displayLabel)
+                            // 답변 저장
+                            questions.add(step.questionText)
+                            answers.add(answer)
+
+                            if (stepIndex < questionSet.steps.size - 1) {
+                                currentStepIndex++
+                            } else {
+                                onComplete(questions.toList(), answers.toList())
                             }
-                            currentStepIndex++
                         }
                     )
                 }
@@ -165,13 +183,16 @@ fun MessageStepScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(24.dp),
+            .padding(32.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
         Text(
             text = message,
-            style = MaterialTheme.typography.headlineMedium,
+            style = MaterialTheme.typography.headlineMedium.copy(
+                fontWeight = FontWeight.SemiBold
+            ),
+            color = TextPrimary,
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(bottom = 48.dp)
         )
@@ -182,22 +203,25 @@ fun MessageStepScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(56.dp),
+            shape = RoundedCornerShape(12.dp),
             colors = ButtonDefaults.buttonColors(
                 containerColor = if (isButtonEnabled) {
-                    MaterialTheme.colorScheme.primary
+                    GreenPrimary
                 } else {
-                    MaterialTheme.colorScheme.surfaceVariant
+                    CardBackgroundTint
                 },
                 contentColor = if (isButtonEnabled) {
-                    MaterialTheme.colorScheme.onPrimary
+                    CardBackground
                 } else {
-                    MaterialTheme.colorScheme.onSurfaceVariant
+                    TextTertiary
                 }
             )
         ) {
             Text(
                 text = if (isButtonEnabled) buttonText else "잠시 호흡해보세요",
-                style = MaterialTheme.typography.titleMedium
+                style = MaterialTheme.typography.titleMedium.copy(
+                    fontWeight = FontWeight.SemiBold
+                )
             )
         }
     }
@@ -207,54 +231,91 @@ fun MessageStepScreen(
 fun InputStepScreen(
     questionText: String,
     hintText: String,
-    minLength: Int,
-    initialAnswer: String,
     stepNumber: Int,
     totalSteps: Int,
-    onNext: (String) -> Unit
+    currentGoal: Goal?,
+    onNext: (answer: String) -> Unit
 ) {
-    var answer by remember { mutableStateOf(initialAnswer) }
+    var answer by remember { mutableStateOf("") }
     val scrollState = rememberScrollState()
+    val configuration = LocalConfiguration.current
+    val screenHeight = configuration.screenHeightDp.dp
+    val topPadding = screenHeight * 0.15f
 
-    val isAnswerValid = answer.length >= minLength
+    val isAnswerValid = answer.isNotEmpty()
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .imePadding()
             .verticalScroll(scrollState)
-            .padding(24.dp),
+            .padding(horizontal = 32.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Spacer(modifier = Modifier.height(48.dp))
+        Spacer(modifier = Modifier.height(topPadding))
 
         // 진행 상황
         Text(
             text = "질문 $stepNumber/$totalSteps",
-            style = MaterialTheme.typography.headlineLarge,
+            style = MaterialTheme.typography.headlineLarge.copy(
+                fontWeight = FontWeight.Bold
+            ),
+            color = TextPrimary,
             textAlign = TextAlign.Center
         )
 
-        Text(
-            text = "잠시 멈춰서 자신을 보살피세요",
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.padding(top = 8.dp)
-        )
+        Spacer(modifier = Modifier.height(24.dp))
 
-        Spacer(modifier = Modifier.height(32.dp))
+        // 두 번째, 세 번째 질문일 때 목표 표시
+        if (stepNumber >= 2 && currentGoal != null) {
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(12.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = GoalAccent.copy(alpha = 0.1f)
+                )
+            ) {
+                Column(
+                    modifier = Modifier.padding(20.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Text(
+                        text = "3개월 내 목표",
+                        style = MaterialTheme.typography.labelLarge,
+                        color = TextSecondary
+                    )
+                    Text(
+                        text = currentGoal.threeMonthGoal,
+                        style = MaterialTheme.typography.bodyLarge.copy(
+                            fontWeight = FontWeight.Medium
+                        ),
+                        color = TextPrimary
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
 
         // 질문
         Card(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(16.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = CardBackground
+            ),
+            elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
         ) {
             Column(
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier.padding(20.dp)
             ) {
                 Text(
                     text = questionText,
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        fontWeight = FontWeight.SemiBold
+                    ),
+                    color = TextPrimary,
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
                 OutlinedTextField(
@@ -265,26 +326,24 @@ fun InputStepScreen(
                         .heightIn(min = 150.dp),
                     minLines = 4,
                     maxLines = 8,
-                    placeholder = { Text(hintText) },
-                    supportingText = {
-                        Text("${answer.length}자 / 최소 ${minLength}자")
+                    placeholder = {
+                        Text(
+                            text = hintText,
+                            color = TextTertiary
+                        )
                     },
-                    isError = answer.isNotEmpty() && !isAnswerValid
+                    shape = RoundedCornerShape(12.dp),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = GreenPrimary,
+                        unfocusedBorderColor = BorderLight,
+                        focusedContainerColor = CardBackground,
+                        unfocusedContainerColor = CardBackground
+                    )
                 )
             }
         }
 
         Spacer(modifier = Modifier.height(24.dp))
-
-        // 안내 메시지
-        if (answer.isNotEmpty() && !isAnswerValid) {
-            Text(
-                text = "답변은 최소 ${minLength}자 이상 작성해주세요",
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.error
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-        }
 
         // 다음 버튼
         Button(
@@ -293,22 +352,25 @@ fun InputStepScreen(
                 .fillMaxWidth()
                 .height(56.dp),
             enabled = isAnswerValid,
+            shape = RoundedCornerShape(12.dp),
             colors = ButtonDefaults.buttonColors(
                 containerColor = if (isAnswerValid) {
-                    MaterialTheme.colorScheme.primary
+                    GreenPrimary
                 } else {
-                    MaterialTheme.colorScheme.surfaceVariant
+                    CardBackgroundTint
                 },
                 contentColor = if (isAnswerValid) {
-                    MaterialTheme.colorScheme.onPrimary
+                    CardBackground
                 } else {
-                    MaterialTheme.colorScheme.onSurfaceVariant
+                    TextTertiary
                 }
             )
         ) {
             Text(
-                text = if (stepNumber == totalSteps) "제출" else "다음 질문으로",
-                style = MaterialTheme.typography.titleMedium
+                text = if (stepNumber == totalSteps) "제출 및 저장" else "다음 질문으로",
+                style = MaterialTheme.typography.titleMedium.copy(
+                    fontWeight = FontWeight.SemiBold
+                )
             )
         }
 

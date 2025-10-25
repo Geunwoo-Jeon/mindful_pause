@@ -5,9 +5,10 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-@Database(entities = [Answer::class], version = 1, exportSchema = false)
+@Database(entities = [Goal::class, AnswerRecord::class], version = 2, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
-    abstract fun answerDao(): AnswerDao
+    abstract fun goalDao(): GoalDao
+    abstract fun answerRecordDao(): AnswerRecordDao
 
     companion object {
         @Volatile
@@ -18,8 +19,9 @@ abstract class AppDatabase : RoomDatabase() {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     AppDatabase::class.java,
-                    "mindful_pause_database"
+                    "goal_coaching_database"
                 )
+                    .fallbackToDestructiveMigration()
                     .build()
                 INSTANCE = instance
                 instance
