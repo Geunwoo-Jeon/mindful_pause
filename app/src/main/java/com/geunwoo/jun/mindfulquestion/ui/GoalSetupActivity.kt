@@ -15,9 +15,11 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.geunwoo.jun.mindfulquestion.R
 import com.geunwoo.jun.mindfulquestion.MainActivity
 import com.geunwoo.jun.mindfulquestion.ui.theme.*
 import com.geunwoo.jun.mindfulquestion.data.AppDatabase
@@ -82,15 +84,15 @@ fun GoalSetupFlow(
     var threeMonthGoal by remember { mutableStateOf("") }
 
     val questions = listOf(
-        "5년 내에 달성하고 싶은 가장 중요한 목표는 무엇인가요?",
-        "1년 이내 달성하고 싶은 가장 중요한 목표는 무엇인가요?",
-        "3개월 이내 달성하고 싶은 가장 중요한 목표는 무엇인가요?"
+        stringResource(R.string.five_year_goal_question),
+        stringResource(R.string.one_year_goal_question),
+        stringResource(R.string.three_month_goal_question)
     )
 
     val hints = listOf(
-        "예: 대학 합격, 자격증 취득 등",
-        "예: 성적 향상, 건강한 습관 만들기 등",
-        "예: 시험 준비, 프로젝트 완성 등"
+        stringResource(R.string.five_year_goal_hint),
+        stringResource(R.string.one_year_goal_hint),
+        stringResource(R.string.three_month_goal_hint)
     )
 
     Surface(
@@ -170,7 +172,7 @@ fun GoalInputScreen(
 
         // 진행 상황
         Text(
-            text = "목표 설정 $stepNumber/$totalSteps",
+            text = stringResource(R.string.goal_setup_progress, stepNumber, totalSteps),
             style = MaterialTheme.typography.headlineLarge.copy(
                 fontWeight = FontWeight.Bold
             ),
@@ -179,7 +181,7 @@ fun GoalInputScreen(
         )
 
         Text(
-            text = "당신의 목표를 설정해주세요",
+            text = stringResource(R.string.set_your_goal),
             style = MaterialTheme.typography.bodyLarge,
             color = TextSecondary,
             textAlign = TextAlign.Center,
@@ -232,7 +234,7 @@ fun GoalInputScreen(
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = "Tip: 목표는 가장 중요한 것 하나만 정하는 것이 가장 좋습니다.",
+                    text = stringResource(R.string.goal_tip),
                     style = MaterialTheme.typography.bodySmall,
                     color = TextTertiary,
                     modifier = Modifier.padding(horizontal = 4.dp)
@@ -264,7 +266,7 @@ fun GoalInputScreen(
             )
         ) {
             Text(
-                text = if (stepNumber == totalSteps) "완료" else "다음",
+                text = if (stepNumber == totalSteps) stringResource(R.string.complete) else stringResource(R.string.next),
                 style = MaterialTheme.typography.titleMedium.copy(
                     fontWeight = FontWeight.SemiBold
                 )

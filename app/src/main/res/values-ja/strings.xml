@@ -1,0 +1,117 @@
+<resources>
+    <!-- App Name -->
+    <string name="app_name">一時停止、振り返り</string>
+    <string name="app_icon">アプリアイコン</string>
+
+    <!-- Accessibility Service -->
+    <string name="accessibility_service_description">アプリの使用状況を検出して自己反省の質問を提供します。このサービスは現在使用中のアプリを確認し、質問ポップアップが表示されたときに検出します。</string>
+
+    <!-- MainActivity - Info Cards -->
+    <string name="reminder_interval">リマインド間隔</string>
+    <string name="screen_time">スクリーンタイム</string>
+    <string name="minutes_format">%d分</string>
+    <string name="seconds_test">30秒</string>
+
+    <!-- MainActivity - Permission Cards -->
+    <string name="overlay_permission_title">オーバーレイ権限</string>
+    <string name="overlay_permission_desc">他のアプリの上にポップアップを表示するために必要です。</string>
+    <string name="notification_permission_title">通知権限</string>
+    <string name="notification_permission_desc">サービス通知に必要です。</string>
+    <string name="accessibility_service_title">アクセシビリティサービス</string>
+    <string name="accessibility_service_desc">設定 > ユーザー補助 > インストール済みサービス > 一時停止、振り返り > オンにしてください。</string>
+    <string name="usage_stats_permission_title">使用状況アクセス権限</string>
+    <string name="usage_stats_permission_desc">スクリーンタイム情報を表示するために必要です。</string>
+    <string name="allow_permission">許可</string>
+
+    <!-- MainActivity - Goals -->
+    <string name="my_goals">私の目標</string>
+    <string name="five_year_goal">5年以内の目標</string>
+    <string name="one_year_goal">1年以内の目標</string>
+    <string name="three_month_goal">3ヶ月以内の目標</string>
+    <string name="set_your_goals">目標を設定してください</string>
+    <string name="edit">編集</string>
+
+    <!-- MainActivity - Answer History -->
+    <string name="answer_history">回答履歴</string>
+    <string name="view_answer_history">回答履歴を表示</string>
+
+    <!-- MainActivity - Service Pause -->
+    <string name="pause_popup">ポップアップを一時停止</string>
+    <string name="service_paused">サービス一時停止中</string>
+    <string name="remaining_time">残り時間：%s</string>
+    <string name="resume_now">今すぐ再開</string>
+    <string name="hour">時間</string>
+    <string name="hours_format">%d時間</string>
+    <string name="hours_minutes_format">%1$d時間%2$d分</string>
+
+    <!-- MainActivity - Interval Dialog -->
+    <string name="select_reminder_interval">リマインド間隔を選択</string>
+    <string name="how_often_questions">どのくらいの頻度で質問を受けたいですか？</string>
+    <string name="interval_30_seconds">30秒（テスト用）</string>
+    <string name="interval_10_minutes">10分</string>
+    <string name="interval_30_minutes">30分</string>
+    <string name="interval_1_hour">1時間</string>
+    <string name="interval_changed">リマインド間隔を%sに変更しました。</string>
+    <string name="interval_changed_30s">30秒（テスト用）</string>
+    <string name="interval_changed_10m">10分</string>
+    <string name="interval_changed_30m">30分</string>
+    <string name="interval_changed_1h">1時間</string>
+
+    <!-- MainActivity - Pause Dialog -->
+    <string name="pause">一時停止</string>
+    <string name="how_long_pause">どのくらい一時停止しますか？</string>
+    <string name="pause_1_hour">1時間</string>
+    <string name="pause_3_hours">3時間</string>
+    <string name="pause_until_tomorrow_7am">明日の午前7時まで</string>
+
+    <!-- Common -->
+    <string name="cancel">キャンセル</string>
+    <string name="confirm">OK</string>
+    <string name="save">保存</string>
+    <string name="next">次へ</string>
+    <string name="complete">完了</string>
+
+    <!-- PopupActivity -->
+    <string name="take_a_breath">少し呼吸してみましょう</string>
+    <string name="question_progress">質問 %1$d/%2$d</string>
+    <string name="submit_and_save">送信して保存</string>
+    <string name="next_question">次の質問へ</string>
+
+    <!-- GoalSetupActivity -->
+    <string name="goal_setup_progress">目標設定 %1$d/%2$d</string>
+    <string name="set_your_goal">目標を設定しましょう</string>
+    <string name="five_year_goal_question">5年以内に達成したい最も重要な目標は何ですか？</string>
+    <string name="five_year_goal_hint">例：大学合格、資格取得など</string>
+    <string name="one_year_goal_question">1年以内に達成したい最も重要な目標は何ですか？</string>
+    <string name="one_year_goal_hint">例：成績向上、健康的な習慣作りなど</string>
+    <string name="three_month_goal_question">3ヶ月以内に達成したい最も重要な目標は何ですか？</string>
+    <string name="three_month_goal_hint">例：試験準備、プロジェクト完成など</string>
+    <string name="goal_tip">ヒント：最も重要な目標1つに焦点を当てるのが最善です。</string>
+
+    <!-- GoalEditActivity -->
+    <string name="edit_five_year_goal">5年以内の目標を編集</string>
+    <string name="edit_one_year_goal">1年以内の目標を編集</string>
+    <string name="edit_three_month_goal">3ヶ月以内の目標を編集</string>
+    <string name="edit_goal">目標を編集</string>
+    <string name="enter_goal">目標を入力してください</string>
+
+    <!-- AnswerHistoryActivity -->
+    <string name="back">戻る</string>
+    <string name="privacy_notice">回答はデバイスにのみ保存され、サーバーに送信されません</string>
+    <string name="no_answers_today">この日の回答記録はありません</string>
+    <string name="date_format">yyyy年M月d日 (E)</string>
+    <string name="time_format">HH:mm</string>
+
+    <!-- QuestionSet -->
+    <string name="question_what_doing">今何をしていますか？</string>
+    <string name="question_what_doing_hint">例：YouTubeを見る、SNSを見るなど</string>
+    <string name="question_goal_relation">今までしていたことは、あなたの目標達成にどのように役立ちますか？</string>
+    <string name="question_goal_relation_hint"></string>
+    <string name="question_next_action">これから何をしますか？</string>
+    <string name="question_next_action_hint"></string>
+
+    <!-- Display Labels (for answer records) -->
+    <string name="label_what_doing">していたこと：</string>
+    <string name="label_goal_relation">目標との関連性：</string>
+    <string name="label_next_action">次の行動：</string>
+</resources>

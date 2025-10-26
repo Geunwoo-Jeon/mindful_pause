@@ -1,0 +1,117 @@
+<resources>
+    <!-- App Name -->
+    <string name="app_name">Пауза, Размышление</string>
+    <string name="app_icon">Значок приложения</string>
+
+    <!-- Accessibility Service -->
+    <string name="accessibility_service_description">Предоставляет вопросы для самоанализа, отслеживая использование приложений. Эта служба проверяет, какое приложение используется в данный момент, и определяет, когда отображаются всплывающие окна с вопросами.</string>
+
+    <!-- MainActivity - Info Cards -->
+    <string name="reminder_interval">Интервал напоминаний</string>
+    <string name="screen_time">Экранное время</string>
+    <string name="minutes_format">%d мин</string>
+    <string name="seconds_test">30 сек</string>
+
+    <!-- MainActivity - Permission Cards -->
+    <string name="overlay_permission_title">Разрешение на наложение</string>
+    <string name="overlay_permission_desc">Требуется для отображения всплывающих окон поверх других приложений.</string>
+    <string name="notification_permission_title">Разрешение на уведомления</string>
+    <string name="notification_permission_desc">Требуется для уведомлений службы.</string>
+    <string name="accessibility_service_title">Служба специальных возможностей</string>
+    <string name="accessibility_service_desc">Перейдите в Настройки > Специальные возможности > Установленные службы > Пауза, Размышление > Включить.</string>
+    <string name="usage_stats_permission_title">Разрешение на доступ к использованию</string>
+    <string name="usage_stats_permission_desc">Требуется для отображения информации об экранном времени.</string>
+    <string name="allow_permission">Разрешить</string>
+
+    <!-- MainActivity - Goals -->
+    <string name="my_goals">Мои цели</string>
+    <string name="five_year_goal">5-летняя цель</string>
+    <string name="one_year_goal">1-летняя цель</string>
+    <string name="three_month_goal">3-месячная цель</string>
+    <string name="set_your_goals">Пожалуйста, установите свои цели</string>
+    <string name="edit">Изменить</string>
+
+    <!-- MainActivity - Answer History -->
+    <string name="answer_history">История ответов</string>
+    <string name="view_answer_history">Посмотреть историю ответов</string>
+
+    <!-- MainActivity - Service Pause -->
+    <string name="pause_popup">Приостановить всплывающие окна</string>
+    <string name="service_paused">Служба приостановлена</string>
+    <string name="remaining_time">Осталось: %s</string>
+    <string name="resume_now">Возобновить сейчас</string>
+    <string name="hour">час</string>
+    <string name="hours_format">%d часов</string>
+    <string name="hours_minutes_format">%1$d часов %2$d мин</string>
+
+    <!-- MainActivity - Interval Dialog -->
+    <string name="select_reminder_interval">Выберите интервал напоминаний</string>
+    <string name="how_often_questions">Как часто вы хотите получать вопросы?</string>
+    <string name="interval_30_seconds">30 секунд (Тест)</string>
+    <string name="interval_10_minutes">10 минут</string>
+    <string name="interval_30_minutes">30 минут</string>
+    <string name="interval_1_hour">1 час</string>
+    <string name="interval_changed">Интервал напоминаний изменен на %s.</string>
+    <string name="interval_changed_30s">30 секунд (Тест)</string>
+    <string name="interval_changed_10m">10 минут</string>
+    <string name="interval_changed_30m">30 минут</string>
+    <string name="interval_changed_1h">1 час</string>
+
+    <!-- MainActivity - Pause Dialog -->
+    <string name="pause">Пауза</string>
+    <string name="how_long_pause">На сколько вы хотите сделать паузу?</string>
+    <string name="pause_1_hour">1 час</string>
+    <string name="pause_3_hours">3 часа</string>
+    <string name="pause_until_tomorrow_7am">До 7 утра завтра</string>
+
+    <!-- Common -->
+    <string name="cancel">Отмена</string>
+    <string name="confirm">ОК</string>
+    <string name="save">Сохранить</string>
+    <string name="next">Далее</string>
+    <string name="complete">Завершить</string>
+
+    <!-- PopupActivity -->
+    <string name="take_a_breath">Найдите минутку, чтобы подышать</string>
+    <string name="question_progress">Вопрос %1$d/%2$d</string>
+    <string name="submit_and_save">Отправить и сохранить</string>
+    <string name="next_question">Следующий вопрос</string>
+
+    <!-- GoalSetupActivity -->
+    <string name="goal_setup_progress">Настройка целей %1$d/%2$d</string>
+    <string name="set_your_goal">Установите свою цель</string>
+    <string name="five_year_goal_question">Какая самая важная цель, которую вы хотите достичь за 5 лет?</string>
+    <string name="five_year_goal_hint">напр., Поступить в университет, Получить сертификацию и т.д.</string>
+    <string name="one_year_goal_question">Какая самая важная цель, которую вы хотите достичь за 1 год?</string>
+    <string name="one_year_goal_hint">напр., Улучшить оценки, Создать здоровые привычки и т.д.</string>
+    <string name="three_month_goal_question">Какая самая важная цель, которую вы хотите достичь за 3 месяца?</string>
+    <string name="three_month_goal_hint">напр., Подготовиться к экзамену, Завершить проект и т.д.</string>
+    <string name="goal_tip">Совет: Лучше сосредоточиться на одной самой важной цели.</string>
+
+    <!-- GoalEditActivity -->
+    <string name="edit_five_year_goal">Изменить 5-летнюю цель</string>
+    <string name="edit_one_year_goal">Изменить 1-летнюю цель</string>
+    <string name="edit_three_month_goal">Изменить 3-месячную цель</string>
+    <string name="edit_goal">Изменить цель</string>
+    <string name="enter_goal">Введите свою цель</string>
+
+    <!-- AnswerHistoryActivity -->
+    <string name="back">Назад</string>
+    <string name="privacy_notice">Ответы хранятся только на вашем устройстве и не отправляются на сервер</string>
+    <string name="no_answers_today">Нет записей ответов за этот день</string>
+    <string name="date_format">d MMM yyyy (E)</string>
+    <string name="time_format">HH:mm</string>
+
+    <!-- QuestionSet -->
+    <string name="question_what_doing">Что вы сейчас делаете?</string>
+    <string name="question_what_doing_hint">напр., Смотрю YouTube, Просматриваю соц. сети и т.д.</string>
+    <string name="question_goal_relation">Как то, что вы только что делали, помогает достичь ваших целей?</string>
+    <string name="question_goal_relation_hint"></string>
+    <string name="question_next_action">Что вы будете делать дальше?</string>
+    <string name="question_next_action_hint"></string>
+
+    <!-- Display Labels (for answer records) -->
+    <string name="label_what_doing">Что я делал:</string>
+    <string name="label_goal_relation">Связь с целями:</string>
+    <string name="label_next_action">Следующее действие:</string>
+</resources>

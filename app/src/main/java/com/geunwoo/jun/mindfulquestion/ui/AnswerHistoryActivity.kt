@@ -19,8 +19,10 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.geunwoo.jun.mindfulquestion.R
 import androidx.lifecycle.lifecycleScope
 import com.geunwoo.jun.mindfulquestion.data.AppDatabase
 import com.geunwoo.jun.mindfulquestion.data.AnswerRecord
@@ -72,7 +74,7 @@ fun AnswerHistoryScreen(onBack: () -> Unit) {
             TopAppBar(
                 title = {
                     Text(
-                        text = "답변 기록",
+                        text = stringResource(R.string.answer_history),
                         style = MaterialTheme.typography.titleLarge.copy(
                             fontWeight = FontWeight.Bold
                         )
@@ -82,7 +84,7 @@ fun AnswerHistoryScreen(onBack: () -> Unit) {
                     IconButton(onClick = onBack) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "뒤로 가기"
+                            contentDescription = stringResource(R.string.back)
                         )
                     }
                 },
@@ -144,12 +146,12 @@ fun AnswerHistoryScreen(onBack: () -> Unit) {
                         showDatePicker = false
                     }
                 ) {
-                    Text("확인")
+                    Text(stringResource(R.string.confirm))
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showDatePicker = false }) {
-                    Text("취소")
+                    Text(stringResource(R.string.cancel))
                 }
             }
         ) {
@@ -164,8 +166,19 @@ fun DateAnswersContent(
     database: AppDatabase,
     onDateClick: () -> Unit
 ) {
-    val dateFormat = remember { SimpleDateFormat("yyyy년 M월 d일 (E)", Locale.KOREAN) }
-    val timeFormat = remember { SimpleDateFormat("HH:mm", Locale.KOREAN) }
+    val context = androidx.compose.ui.platform.LocalContext.current
+    val dateFormat = remember {
+        SimpleDateFormat(
+            context.getString(R.string.date_format),
+            Locale.getDefault()
+        )
+    }
+    val timeFormat = remember {
+        SimpleDateFormat(
+            context.getString(R.string.time_format),
+            Locale.getDefault()
+        )
+    }
 
     val answers by database.answerRecordDao()
         .getRecordsByDate(date.timeInMillis)
@@ -206,7 +219,7 @@ fun DateAnswersContent(
 
         // 프라이버시 안내
         Text(
-            text = "답변은 기기에만 저장되며 서버로 전송되지 않습니다",
+            text = stringResource(R.string.privacy_notice),
             style = MaterialTheme.typography.bodySmall,
             color = TextTertiary,
             modifier = Modifier.padding(vertical = 8.dp)
@@ -223,7 +236,7 @@ fun DateAnswersContent(
                 contentAlignment = Alignment.TopCenter
             ) {
                 Text(
-                    text = "이 날의 답변 기록이 없습니다",
+                    text = stringResource(R.string.no_answers_today),
                     style = MaterialTheme.typography.bodyLarge,
                     color = TextTertiary
                 )

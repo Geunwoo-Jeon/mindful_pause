@@ -1,0 +1,117 @@
+<resources>
+    <!-- App Name -->
+    <string name="app_name">Dur, Düşün</string>
+    <string name="app_icon">Uygulama simgesi</string>
+
+    <!-- Accessibility Service -->
+    <string name="accessibility_service_description">Uygulama kullanımını tespit ederek öz yansıtma soruları sunar. Bu hizmet, şu anda hangi uygulamanın kullanıldığını kontrol eder ve soru açılır pencereleri görüntülendiğinde algılar.</string>
+
+    <!-- MainActivity - Info Cards -->
+    <string name="reminder_interval">Hatırlatma aralığı</string>
+    <string name="screen_time">Ekran süresi</string>
+    <string name="minutes_format">%d dk</string>
+    <string name="seconds_test">30 sn</string>
+
+    <!-- MainActivity - Permission Cards -->
+    <string name="overlay_permission_title">Üst katman izni</string>
+    <string name="overlay_permission_desc">Diğer uygulamaların üzerinde açılır pencere görüntülemek için gereklidir.</string>
+    <string name="notification_permission_title">Bildirim izni</string>
+    <string name="notification_permission_desc">Hizmet bildirimleri için gereklidir.</string>
+    <string name="accessibility_service_title">Erişilebilirlik hizmeti</string>
+    <string name="accessibility_service_desc">Lütfen Ayarlar > Erişilebilirlik > Yüklü hizmetler > Dur, Düşün > Açık konumuna getirin.</string>
+    <string name="usage_stats_permission_title">Kullanım erişim izni</string>
+    <string name="usage_stats_permission_desc">Ekran süresi bilgilerini görüntülemek için gereklidir.</string>
+    <string name="allow_permission">İzin ver</string>
+
+    <!-- MainActivity - Goals -->
+    <string name="my_goals">Hedeflerim</string>
+    <string name="five_year_goal">5 yıllık hedef</string>
+    <string name="one_year_goal">1 yıllık hedef</string>
+    <string name="three_month_goal">3 aylık hedef</string>
+    <string name="set_your_goals">Lütfen hedeflerinizi belirleyin</string>
+    <string name="edit">Düzenle</string>
+
+    <!-- MainActivity - Answer History -->
+    <string name="answer_history">Cevap geçmişi</string>
+    <string name="view_answer_history">Cevap geçmişini görüntüle</string>
+
+    <!-- MainActivity - Service Pause -->
+    <string name="pause_popup">Açılır pencereyi duraklat</string>
+    <string name="service_paused">Hizmet duraklatıldı</string>
+    <string name="remaining_time">Kalan: %s</string>
+    <string name="resume_now">Şimdi devam et</string>
+    <string name="hour">saat</string>
+    <string name="hours_format">%d saat</string>
+    <string name="hours_minutes_format">%1$d saat %2$d dk</string>
+
+    <!-- MainActivity - Interval Dialog -->
+    <string name="select_reminder_interval">Hatırlatma aralığını seçin</string>
+    <string name="how_often_questions">Ne sıklıkla sorulmak istersiniz?</string>
+    <string name="interval_30_seconds">30 saniye (Test)</string>
+    <string name="interval_10_minutes">10 dakika</string>
+    <string name="interval_30_minutes">30 dakika</string>
+    <string name="interval_1_hour">1 saat</string>
+    <string name="interval_changed">Hatırlatma aralığı %s olarak değiştirildi.</string>
+    <string name="interval_changed_30s">30 saniye (Test)</string>
+    <string name="interval_changed_10m">10 dakika</string>
+    <string name="interval_changed_30m">30 dakika</string>
+    <string name="interval_changed_1h">1 saat</string>
+
+    <!-- MainActivity - Pause Dialog -->
+    <string name="pause">Duraklat</string>
+    <string name="how_long_pause">Ne kadar süre duraklatmak istersiniz?</string>
+    <string name="pause_1_hour">1 saat</string>
+    <string name="pause_3_hours">3 saat</string>
+    <string name="pause_until_tomorrow_7am">Yarın sabah 7\'ye kadar</string>
+
+    <!-- Common -->
+    <string name="cancel">İptal</string>
+    <string name="confirm">Tamam</string>
+    <string name="save">Kaydet</string>
+    <string name="next">İleri</string>
+    <string name="complete">Tamamla</string>
+
+    <!-- PopupActivity -->
+    <string name="take_a_breath">Bir dakika nefes alın</string>
+    <string name="question_progress">Soru %1$d/%2$d</string>
+    <string name="submit_and_save">Gönder ve kaydet</string>
+    <string name="next_question">Sonraki soru</string>
+
+    <!-- GoalSetupActivity -->
+    <string name="goal_setup_progress">Hedef kurulumu %1$d/%2$d</string>
+    <string name="set_your_goal">Hedefinizi belirleyin</string>
+    <string name="five_year_goal_question">5 yıl içinde ulaşmak istediğiniz en önemli hedef nedir?</string>
+    <string name="five_year_goal_hint">örn. Üniversiteye girmek, Sertifika almak, vb.</string>
+    <string name="one_year_goal_question">1 yıl içinde ulaşmak istediğiniz en önemli hedef nedir?</string>
+    <string name="one_year_goal_hint">örn. Notları iyileştirmek, Sağlıklı alışkanlıklar oluşturmak, vb.</string>
+    <string name="three_month_goal_question">3 ay içinde ulaşmak istediğiniz en önemli hedef nedir?</string>
+    <string name="three_month_goal_hint">örn. Sınava hazırlanmak, Projeyi tamamlamak, vb.</string>
+    <string name="goal_tip">İpucu: En önemli bir hedefe odaklanmak en iyisidir.</string>
+
+    <!-- GoalEditActivity -->
+    <string name="edit_five_year_goal">5 yıllık hedefi düzenle</string>
+    <string name="edit_one_year_goal">1 yıllık hedefi düzenle</string>
+    <string name="edit_three_month_goal">3 aylık hedefi düzenle</string>
+    <string name="edit_goal">Hedefi düzenle</string>
+    <string name="enter_goal">Hedefinizi girin</string>
+
+    <!-- AnswerHistoryActivity -->
+    <string name="back">Geri</string>
+    <string name="privacy_notice">Cevaplar yalnızca cihazınızda saklanır ve herhangi bir sunucuya gönderilmez</string>
+    <string name="no_answers_today">Bu gün için cevap kaydı yok</string>
+    <string name="date_format">d MMM yyyy (E)</string>
+    <string name="time_format">HH:mm</string>
+
+    <!-- QuestionSet -->
+    <string name="question_what_doing">Şu anda ne yapıyorsunuz?</string>
+    <string name="question_what_doing_hint">örn. YouTube izlemek, Sosyal medyada gezinmek, vb.</string>
+    <string name="question_goal_relation">Az önce yaptığınız şey hedeflerinize ulaşmanıza nasıl yardımcı oluyor?</string>
+    <string name="question_goal_relation_hint"></string>
+    <string name="question_next_action">Bundan sonra ne yapacaksınız?</string>
+    <string name="question_next_action_hint"></string>
+
+    <!-- Display Labels (for answer records) -->
+    <string name="label_what_doing">Yaptığım şey:</string>
+    <string name="label_goal_relation">Hedeflerle ilişki:</string>
+    <string name="label_next_action">Sonraki eylem:</string>
+</resources>

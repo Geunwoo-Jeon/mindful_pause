@@ -15,9 +15,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.geunwoo.jun.mindfulquestion.R
 import com.geunwoo.jun.mindfulquestion.ui.theme.*
 import com.geunwoo.jun.mindfulquestion.services.AppUsageAccessibilityService
 import com.geunwoo.jun.mindfulquestion.services.MonitoringService
@@ -57,8 +59,29 @@ class PopupActivity : ComponentActivity() {
 
         setContent {
             MindfulQuestionTheme {
+                val questionSet = QuestionSet(
+                    version = "v2",
+                    steps = listOf(
+                        QuestionStep.InputStep(
+                            questionText = getString(R.string.question_what_doing),
+                            hintText = getString(R.string.question_what_doing_hint),
+                            displayLabel = getString(R.string.label_what_doing)
+                        ),
+                        QuestionStep.InputStep(
+                            questionText = getString(R.string.question_goal_relation),
+                            hintText = getString(R.string.question_goal_relation_hint),
+                            displayLabel = getString(R.string.label_goal_relation)
+                        ),
+                        QuestionStep.InputStep(
+                            questionText = getString(R.string.question_next_action),
+                            hintText = getString(R.string.question_next_action_hint),
+                            displayLabel = getString(R.string.label_next_action)
+                        )
+                    )
+                )
+
                 QuestionSetFlow(
-                    questionSet = QuestionSet.DEFAULT_V2,
+                    questionSet = questionSet,
                     currentGoal = currentGoal,
                     onComplete = { questions, answers ->
                         // 답변 저장
@@ -218,7 +241,7 @@ fun MessageStepScreen(
             )
         ) {
             Text(
-                text = if (isButtonEnabled) buttonText else "잠시 호흡해보세요",
+                text = if (isButtonEnabled) buttonText else stringResource(R.string.take_a_breath),
                 style = MaterialTheme.typography.titleMedium.copy(
                     fontWeight = FontWeight.SemiBold
                 )
@@ -256,7 +279,7 @@ fun InputStepScreen(
 
         // 진행 상황
         Text(
-            text = "질문 $stepNumber/$totalSteps",
+            text = stringResource(R.string.question_progress, stepNumber, totalSteps),
             style = MaterialTheme.typography.headlineLarge.copy(
                 fontWeight = FontWeight.Bold
             ),
@@ -280,7 +303,7 @@ fun InputStepScreen(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Text(
-                        text = "3개월 내 목표",
+                        text = stringResource(R.string.three_month_goal),
                         style = MaterialTheme.typography.labelLarge,
                         color = TextSecondary
                     )
@@ -367,7 +390,7 @@ fun InputStepScreen(
             )
         ) {
             Text(
-                text = if (stepNumber == totalSteps) "제출 및 저장" else "다음 질문으로",
+                text = if (stepNumber == totalSteps) stringResource(R.string.submit_and_save) else stringResource(R.string.next_question),
                 style = MaterialTheme.typography.titleMedium.copy(
                     fontWeight = FontWeight.SemiBold
                 )

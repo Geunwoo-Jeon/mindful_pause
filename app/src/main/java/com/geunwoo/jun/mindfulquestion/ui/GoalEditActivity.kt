@@ -13,8 +13,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.geunwoo.jun.mindfulquestion.R
 import androidx.lifecycle.lifecycleScope
 import com.geunwoo.jun.mindfulquestion.data.AppDatabase
 import com.geunwoo.jun.mindfulquestion.data.Goal
@@ -101,10 +103,10 @@ fun GoalEditScreen(
     onCancel: () -> Unit
 ) {
     val (title, initialGoalText) = when (goalType) {
-        GoalEditActivity.GOAL_TYPE_FIVE_YEAR -> "5년 내 목표 수정" to currentGoal.fiveYearGoal
-        GoalEditActivity.GOAL_TYPE_ONE_YEAR -> "1년 내 목표 수정" to currentGoal.oneYearGoal
-        GoalEditActivity.GOAL_TYPE_THREE_MONTH -> "3개월 내 목표 수정" to currentGoal.threeMonthGoal
-        else -> "목표 수정" to ""
+        GoalEditActivity.GOAL_TYPE_FIVE_YEAR -> stringResource(R.string.edit_five_year_goal) to currentGoal.fiveYearGoal
+        GoalEditActivity.GOAL_TYPE_ONE_YEAR -> stringResource(R.string.edit_one_year_goal) to currentGoal.oneYearGoal
+        GoalEditActivity.GOAL_TYPE_THREE_MONTH -> stringResource(R.string.edit_three_month_goal) to currentGoal.threeMonthGoal
+        else -> stringResource(R.string.edit_goal) to ""
     }
 
     var goalText by remember { mutableStateOf(initialGoalText) }
@@ -144,7 +146,7 @@ fun GoalEditScreen(
             maxLines = 8,
             placeholder = {
                 Text(
-                    text = "목표를 입력하세요",
+                    text = stringResource(R.string.enter_goal),
                     color = TextTertiary
                 )
             },
@@ -160,7 +162,7 @@ fun GoalEditScreen(
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(
-            text = "Tip: 목표는 가장 중요한 것 하나만 정하는 것이 가장 좋습니다.",
+            text = stringResource(R.string.goal_tip),
             style = MaterialTheme.typography.bodySmall,
             color = TextTertiary,
             modifier = Modifier.padding(horizontal = 4.dp)
@@ -183,7 +185,7 @@ fun GoalEditScreen(
                 )
             ) {
                 Text(
-                    text = "취소",
+                    text = stringResource(R.string.cancel),
                     style = MaterialTheme.typography.titleMedium.copy(
                         fontWeight = FontWeight.SemiBold
                     )
@@ -211,7 +213,7 @@ fun GoalEditScreen(
                 )
             ) {
                 Text(
-                    text = "저장",
+                    text = stringResource(R.string.save),
                     style = MaterialTheme.typography.titleMedium.copy(
                         fontWeight = FontWeight.SemiBold
                     )

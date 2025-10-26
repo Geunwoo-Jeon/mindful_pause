@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -208,6 +209,20 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+/**
+ * 스크린타임을 시간과 분으로 포맷팅
+ */
+@Composable
+fun formatScreenTime(minutes: Int): String {
+    return if (minutes >= 60) {
+        val hours = minutes / 60
+        val remainingMinutes = minutes % 60
+        stringResource(R.string.hours_minutes_format, hours, remainingMinutes)
+    } else {
+        stringResource(R.string.minutes_format, minutes)
+    }
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
@@ -245,14 +260,14 @@ fun MainScreen(
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_launcher_foreground),
-                            contentDescription = "앱 아이콘",
+                            contentDescription = stringResource(R.string.app_icon),
                             tint = androidx.compose.ui.graphics.Color.Unspecified,
                             modifier = Modifier
                                 .size(60.dp)
                                 .offset(x = (-8).dp)
                         )
                         Text(
-                            text = "잠시, 멈춤",
+                            text = stringResource(R.string.app_name),
                             style = MaterialTheme.typography.titleLarge.copy(
                                 fontWeight = FontWeight.Bold
                             ),
@@ -348,12 +363,12 @@ fun MainScreenContent(
             ) {
                 // 리마인드 간격 카드
                 val intervalText = when (selectedInterval) {
-                    0 -> "30초"
-                    else -> "${selectedInterval}분"
+                    0 -> stringResource(R.string.seconds_test)
+                    else -> stringResource(R.string.minutes_format, selectedInterval)
                 }
                 InfoCard(
                     icon = Icons.Default.Notifications,
-                    label = "리마인드 간격",
+                    label = stringResource(R.string.reminder_interval),
                     value = intervalText,
                     modifier = Modifier.weight(1f),
                     onClick = { onShowIntervalDialog(true) }
@@ -362,8 +377,8 @@ fun MainScreenContent(
                 // 오늘의 스크린타임 카드
                 InfoCard(
                     icon = Icons.Default.Info,
-                    label = "스크린타임",
-                    value = "${todayScreenTimeMinutes}분",
+                    label = stringResource(R.string.screen_time),
+                    value = formatScreenTime(todayScreenTimeMinutes),
                     modifier = Modifier.weight(1f),
                     onClick = null
                 )
@@ -374,8 +389,8 @@ fun MainScreenContent(
             // 권한 상태 카드들
             if (!overlayPermissionGranted) {
                 PermissionCard(
-                    title = "오버레이 권한",
-                    description = "다른 앱 위에 팝업을 표시하기 위해 필요합니다.",
+                    title = stringResource(R.string.overlay_permission_title),
+                    description = stringResource(R.string.overlay_permission_desc),
                     isGranted = overlayPermissionGranted,
                     onRequestPermission = onRequestOverlayPermission
                 )
@@ -383,8 +398,8 @@ fun MainScreenContent(
 
             if (!notificationPermissionGranted) {
                 PermissionCard(
-                    title = "알림 권한",
-                    description = "서비스 실행 알림을 위해 필요합니다.",
+                    title = stringResource(R.string.notification_permission_title),
+                    description = stringResource(R.string.notification_permission_desc),
                     isGranted = notificationPermissionGranted,
                     onRequestPermission = onRequestNotificationPermission
                 )
@@ -392,8 +407,8 @@ fun MainScreenContent(
 
             if (!accessibilityServiceEnabled) {
                 PermissionCard(
-                    title = "접근성 서비스",
-                    description = "설정 > 접근성 > 설치된 서비스 > 잠시, 멈춤 > 사용으로 변경해주세요.",
+                    title = stringResource(R.string.accessibility_service_title),
+                    description = stringResource(R.string.accessibility_service_desc),
                     isGranted = accessibilityServiceEnabled,
                     onRequestPermission = onRequestAccessibilitySettings
                 )
@@ -401,8 +416,8 @@ fun MainScreenContent(
 
             if (!usageStatsPermissionGranted) {
                 PermissionCard(
-                    title = "사용 접근 권한",
-                    description = "스크린타임 정보를 표시하기 위해 필요합니다.",
+                    title = stringResource(R.string.usage_stats_permission_title),
+                    description = stringResource(R.string.usage_stats_permission_desc),
                     isGranted = usageStatsPermissionGranted,
                     onRequestPermission = onRequestUsageStatsPermission
                 )
@@ -416,7 +431,7 @@ fun MainScreenContent(
             // 목표 표시
             if (currentGoal != null) {
                 Text(
-                    text = "나의 목표",
+                    text = stringResource(R.string.my_goals),
                     style = MaterialTheme.typography.headlineMedium.copy(
                         fontWeight = FontWeight.Bold
                     ),
@@ -427,26 +442,26 @@ fun MainScreenContent(
                 )
 
                 GoalCard(
-                    title = "5년 내 목표",
+                    title = stringResource(R.string.five_year_goal),
                     goal = currentGoal.fiveYearGoal,
                     icon = Icons.Default.FavoriteBorder,
                     onClick = { onEditGoal(GoalEditActivity.GOAL_TYPE_FIVE_YEAR) }
                 )
                 GoalCard(
-                    title = "1년 내 목표",
+                    title = stringResource(R.string.one_year_goal),
                     goal = currentGoal.oneYearGoal,
                     icon = Icons.Default.Star,
                     onClick = { onEditGoal(GoalEditActivity.GOAL_TYPE_ONE_YEAR) }
                 )
                 GoalCard(
-                    title = "3개월 내 목표",
+                    title = stringResource(R.string.three_month_goal),
                     goal = currentGoal.threeMonthGoal,
                     icon = Icons.Default.Check,
                     onClick = { onEditGoal(GoalEditActivity.GOAL_TYPE_THREE_MONTH) }
                 )
             } else {
                 Text(
-                    text = "목표를 설정해주세요",
+                    text = stringResource(R.string.set_your_goals),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -465,12 +480,12 @@ fun MainScreenContent(
             ) {
                 Icon(
                     imageVector = Icons.Default.DateRange,
-                    contentDescription = "답변 기록",
+                    contentDescription = stringResource(R.string.answer_history),
                     modifier = Modifier.size(20.dp)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = "답변 기록 보기",
+                    text = stringResource(R.string.view_answer_history),
                     style = MaterialTheme.typography.titleMedium.copy(
                         fontWeight = FontWeight.SemiBold
                     )
@@ -499,12 +514,12 @@ fun MainScreenContent(
                     val hours = totalMinutes / 60
                     val minutes = totalMinutes % 60
                     if (minutes > 0) {
-                        "${hours}시간 ${minutes}분"
+                        stringResource(R.string.hours_minutes_format, hours, minutes)
                     } else {
-                        "${hours}시간"
+                        stringResource(R.string.hours_format, hours)
                     }
                 } else {
-                    "${totalMinutes}분"
+                    stringResource(R.string.minutes_format, totalMinutes)
                 }
 
                 Card(
@@ -520,14 +535,14 @@ fun MainScreenContent(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
-                            text = "서비스 일시중지 중",
+                            text = stringResource(R.string.service_paused),
                             style = MaterialTheme.typography.titleMedium.copy(
                                 fontWeight = FontWeight.SemiBold
                             ),
                             color = TextPrimary
                         )
                         Text(
-                            text = "남은 시간: $timeText",
+                            text = stringResource(R.string.remaining_time, timeText),
                             style = MaterialTheme.typography.bodyLarge,
                             color = TextSecondary,
                             modifier = Modifier.padding(top = 8.dp)
@@ -543,7 +558,7 @@ fun MainScreenContent(
                                 containerColor = GreenPrimary
                             )
                         ) {
-                            Text("지금 재개하기")
+                            Text(stringResource(R.string.resume_now))
                         }
                     }
                 }
@@ -566,7 +581,7 @@ fun MainScreenContent(
                         modifier = Modifier.size(20.dp)
                     )
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text("팝업 일시 중지")
+                    Text(stringResource(R.string.pause_popup))
                 }
             }
         }
@@ -576,64 +591,65 @@ fun MainScreenContent(
     if (showIntervalDialog) {
         AlertDialog(
             onDismissRequest = { onShowIntervalDialog(false) },
-            title = { Text("리마인드 간격 선택") },
+            title = { Text(stringResource(R.string.select_reminder_interval)) },
             text = {
                 Column {
-                    Text("얼마나 자주 질문을 받으시겠습니까?")
+                    Text(stringResource(R.string.how_often_questions))
                     Spacer(modifier = Modifier.height(16.dp))
+                    val context = androidx.compose.ui.platform.LocalContext.current
                     Button(
                         onClick = {
                             onIntervalChange(0)
-                            onChangedIntervalText("30초로 (테스트용)")
+                            onChangedIntervalText(context.getString(R.string.interval_changed_30s))
                             onShowIntervalDialog(false)
                             onShowIntervalChangedDialog(true)
                         },
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text("30초 (테스트용)")
+                        Text(stringResource(R.string.interval_30_seconds))
                     }
                     Spacer(modifier = Modifier.height(8.dp))
                     Button(
                         onClick = {
                             onIntervalChange(10)
-                            onChangedIntervalText("10분으로")
+                            onChangedIntervalText(context.getString(R.string.interval_changed_10m))
                             onShowIntervalDialog(false)
                             onShowIntervalChangedDialog(true)
                         },
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text("10분")
+                        Text(stringResource(R.string.interval_10_minutes))
                     }
                     Spacer(modifier = Modifier.height(8.dp))
                     Button(
                         onClick = {
                             onIntervalChange(30)
-                            onChangedIntervalText("30분으로")
+                            onChangedIntervalText(context.getString(R.string.interval_changed_30m))
                             onShowIntervalDialog(false)
                             onShowIntervalChangedDialog(true)
                         },
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text("30분")
+                        Text(stringResource(R.string.interval_30_minutes))
                     }
                     Spacer(modifier = Modifier.height(8.dp))
                     Button(
                         onClick = {
                             onIntervalChange(60)
-                            onChangedIntervalText("1시간으로")
+                            onChangedIntervalText(context.getString(R.string.interval_changed_1h))
                             onShowIntervalDialog(false)
                             onShowIntervalChangedDialog(true)
                         },
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text("1시간")
+                        Text(stringResource(R.string.interval_1_hour))
                     }
                 }
             },
             confirmButton = {},
             dismissButton = {
                 TextButton(onClick = { onShowIntervalDialog(false) }) {
-                    Text("취소")
+                    Text(stringResource(R.string.cancel))
                 }
             }
         )
@@ -643,10 +659,10 @@ fun MainScreenContent(
     if (showIntervalChangedDialog) {
         AlertDialog(
             onDismissRequest = { onShowIntervalChangedDialog(false) },
-            text = { Text("리마인드 간격을 ${changedIntervalText} 변경하였습니다.") },
+            text = { Text(stringResource(R.string.interval_changed, changedIntervalText)) },
             confirmButton = {
                 TextButton(onClick = { onShowIntervalChangedDialog(false) }) {
-                    Text("확인")
+                    Text(stringResource(R.string.confirm))
                 }
             }
         )
@@ -656,10 +672,10 @@ fun MainScreenContent(
     if (showPauseDialog) {
         AlertDialog(
             onDismissRequest = { onShowPauseDialog(false) },
-            title = { Text("일시중지") },
+            title = { Text(stringResource(R.string.pause)) },
             text = {
                 Column {
-                    Text("얼마나 일시중지하시겠습니까?")
+                    Text(stringResource(R.string.how_long_pause))
                     Spacer(modifier = Modifier.height(16.dp))
                     Button(
                         onClick = {
@@ -668,7 +684,7 @@ fun MainScreenContent(
                         },
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text("1시간")
+                        Text(stringResource(R.string.pause_1_hour))
                     }
                     Spacer(modifier = Modifier.height(8.dp))
                     Button(
@@ -678,7 +694,7 @@ fun MainScreenContent(
                         },
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text("3시간")
+                        Text(stringResource(R.string.pause_3_hours))
                     }
                     Spacer(modifier = Modifier.height(8.dp))
                     Button(
@@ -696,14 +712,14 @@ fun MainScreenContent(
                         },
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text("내일 오전 7시까지")
+                        Text(stringResource(R.string.pause_until_tomorrow_7am))
                     }
                 }
             },
             confirmButton = {},
             dismissButton = {
                 TextButton(onClick = { onShowPauseDialog(false) }) {
-                    Text("취소")
+                    Text(stringResource(R.string.cancel))
                 }
             }
         )
@@ -748,7 +764,7 @@ fun PermissionCard(
                     )
                 } else {
                     TextButton(onClick = onRequestPermission) {
-                        Text("허용하기")
+                        Text(stringResource(R.string.allow_permission))
                     }
                 }
             }

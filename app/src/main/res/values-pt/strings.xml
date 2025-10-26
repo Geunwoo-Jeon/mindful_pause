@@ -1,0 +1,117 @@
+<resources>
+    <!-- App Name -->
+    <string name="app_name">Pausa, Refletir</string>
+    <string name="app_icon">Ícone do aplicativo</string>
+
+    <!-- Accessibility Service -->
+    <string name="accessibility_service_description">Fornece perguntas de autorreflexão ao detectar o uso de aplicativos. Este serviço verifica qual aplicativo está sendo usado no momento e detecta quando janelas pop-up de perguntas são exibidas.</string>
+
+    <!-- MainActivity - Info Cards -->
+    <string name="reminder_interval">Intervalo de lembrete</string>
+    <string name="screen_time">Tempo de tela</string>
+    <string name="minutes_format">%d min</string>
+    <string name="seconds_test">30 seg</string>
+
+    <!-- MainActivity - Permission Cards -->
+    <string name="overlay_permission_title">Permissão de sobreposição</string>
+    <string name="overlay_permission_desc">Necessário para exibir janelas pop-up sobre outros aplicativos.</string>
+    <string name="notification_permission_title">Permissão de notificação</string>
+    <string name="notification_permission_desc">Necessário para notificações de serviço.</string>
+    <string name="accessibility_service_title">Serviço de acessibilidade</string>
+    <string name="accessibility_service_desc">Por favor, vá em Configurações > Acessibilidade > Serviços instalados > Pausa, Refletir > Ativar.</string>
+    <string name="usage_stats_permission_title">Permissão de acesso de uso</string>
+    <string name="usage_stats_permission_desc">Necessário para exibir informações de tempo de tela.</string>
+    <string name="allow_permission">Permitir</string>
+
+    <!-- MainActivity - Goals -->
+    <string name="my_goals">Meus objetivos</string>
+    <string name="five_year_goal">Objetivo de 5 anos</string>
+    <string name="one_year_goal">Objetivo de 1 ano</string>
+    <string name="three_month_goal">Objetivo de 3 meses</string>
+    <string name="set_your_goals">Por favor, defina seus objetivos</string>
+    <string name="edit">Editar</string>
+
+    <!-- MainActivity - Answer History -->
+    <string name="answer_history">Histórico de respostas</string>
+    <string name="view_answer_history">Ver histórico de respostas</string>
+
+    <!-- MainActivity - Service Pause -->
+    <string name="pause_popup">Pausar janela pop-up</string>
+    <string name="service_paused">Serviço pausado</string>
+    <string name="remaining_time">Restante: %s</string>
+    <string name="resume_now">Retomar agora</string>
+    <string name="hour">hora</string>
+    <string name="hours_format">%d horas</string>
+    <string name="hours_minutes_format">%1$d horas %2$d min</string>
+
+    <!-- MainActivity - Interval Dialog -->
+    <string name="select_reminder_interval">Selecionar intervalo de lembrete</string>
+    <string name="how_often_questions">Com que frequência você gostaria de ser perguntado?</string>
+    <string name="interval_30_seconds">30 segundos (Teste)</string>
+    <string name="interval_10_minutes">10 minutos</string>
+    <string name="interval_30_minutes">30 minutos</string>
+    <string name="interval_1_hour">1 hora</string>
+    <string name="interval_changed">Intervalo de lembrete alterado para %s.</string>
+    <string name="interval_changed_30s">30 segundos (Teste)</string>
+    <string name="interval_changed_10m">10 minutos</string>
+    <string name="interval_changed_30m">30 minutos</string>
+    <string name="interval_changed_1h">1 hora</string>
+
+    <!-- MainActivity - Pause Dialog -->
+    <string name="pause">Pausar</string>
+    <string name="how_long_pause">Por quanto tempo você gostaria de pausar?</string>
+    <string name="pause_1_hour">1 hora</string>
+    <string name="pause_3_hours">3 horas</string>
+    <string name="pause_until_tomorrow_7am">Até 7h de amanhã</string>
+
+    <!-- Common -->
+    <string name="cancel">Cancelar</string>
+    <string name="confirm">OK</string>
+    <string name="save">Salvar</string>
+    <string name="next">Próximo</string>
+    <string name="complete">Concluir</string>
+
+    <!-- PopupActivity -->
+    <string name="take_a_breath">Reserve um momento para respirar</string>
+    <string name="question_progress">Pergunta %1$d/%2$d</string>
+    <string name="submit_and_save">Enviar e salvar</string>
+    <string name="next_question">Próxima pergunta</string>
+
+    <!-- GoalSetupActivity -->
+    <string name="goal_setup_progress">Configuração de objetivos %1$d/%2$d</string>
+    <string name="set_your_goal">Defina seu objetivo</string>
+    <string name="five_year_goal_question">Qual é o objetivo mais importante que você deseja alcançar em 5 anos?</string>
+    <string name="five_year_goal_hint">ex. Entrar na universidade, Obter certificação, etc.</string>
+    <string name="one_year_goal_question">Qual é o objetivo mais importante que você deseja alcançar em 1 ano?</string>
+    <string name="one_year_goal_hint">ex. Melhorar notas, Criar hábitos saudáveis, etc.</string>
+    <string name="three_month_goal_question">Qual é o objetivo mais importante que você deseja alcançar em 3 meses?</string>
+    <string name="three_month_goal_hint">ex. Preparar para exame, Concluir projeto, etc.</string>
+    <string name="goal_tip">Dica: É melhor focar em um objetivo mais importante.</string>
+
+    <!-- GoalEditActivity -->
+    <string name="edit_five_year_goal">Editar objetivo de 5 anos</string>
+    <string name="edit_one_year_goal">Editar objetivo de 1 ano</string>
+    <string name="edit_three_month_goal">Editar objetivo de 3 meses</string>
+    <string name="edit_goal">Editar objetivo</string>
+    <string name="enter_goal">Digite seu objetivo</string>
+
+    <!-- AnswerHistoryActivity -->
+    <string name="back">Voltar</string>
+    <string name="privacy_notice">As respostas são armazenadas apenas em seu dispositivo e não são enviadas para nenhum servidor</string>
+    <string name="no_answers_today">Nenhum registro de respostas para este dia</string>
+    <string name="date_format">d \'de\' MMM \'de\' yyyy (E)</string>
+    <string name="time_format">HH:mm</string>
+
+    <!-- QuestionSet -->
+    <string name="question_what_doing">O que você está fazendo agora?</string>
+    <string name="question_what_doing_hint">ex. Assistindo YouTube, Navegando nas redes sociais, etc.</string>
+    <string name="question_goal_relation">Como o que você estava fazendo ajuda você a alcançar seus objetivos?</string>
+    <string name="question_goal_relation_hint"></string>
+    <string name="question_next_action">O que você fará a partir de agora?</string>
+    <string name="question_next_action_hint"></string>
+
+    <!-- Display Labels (for answer records) -->
+    <string name="label_what_doing">O que eu estava fazendo:</string>
+    <string name="label_goal_relation">Relação com objetivos:</string>
+    <string name="label_next_action">Próxima ação:</string>
+</resources>
