@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>プライバシーポリシー - 一時停止、振り返り (Pause, Reflect)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino Sans', sans-serif;
+            line-height: 1.8;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c5f2d;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        h2 {
+            color: #2c5f2d;
+            margin-top: 32px;
+            margin-bottom: 16px;
+            font-size: 20px;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 8px;
+        }
+        h3 {
+            color: #555;
+            margin-top: 20px;
+            margin-bottom: 12px;
+            font-size: 16px;
+        }
+        p, li {
+            margin-bottom: 12px;
+            color: #555;
+        }
+        ul {
+            margin-left: 20px;
+        }
+        .highlight {
+            background-color: #e8f5e9;
+            padding: 16px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #2c5f2d;
+        }
+        .lang-switch {
+            text-align: right;
+            margin-bottom: 20px;
+        }
+        .lang-switch a {
+            color: #2c5f2d;
+            text-decoration: none;
+            padding: 8px 16px;
+            border: 1px solid #2c5f2d;
+            border-radius: 4px;
+            font-size: 14px;
+            margin-left: 8px;
+        }
+        .lang-switch a:hover {
+            background-color: #2c5f2d;
+            color: white;
+        }
+        .date {
+            color: #999;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+        .contact {
+            background-color: #f5f5f5;
+            padding: 16px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+            color: #999;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="lang-switch">
+        <a href="privacy-policy.html">한국어</a>
+        <a href="privacy-policy-en.html">English</a>
+    </div>
+
+    <div class="container">
+        <h1>プライバシーポリシー</h1>
+        <p class="date">最終更新日：2025年1月26日</p>
+
+        <div class="highlight">
+            <strong>🔒 重要なポイント</strong><br>
+            「一時停止、振り返り」アプリは、<strong>いかなる個人情報も収集または外部送信いたしません。</strong><br>
+            すべてのデータはお客様のデバイスにのみ保存され、サーバーや第三者と共有されることはありません。
+        </div>
+
+        <h2>1. 個人情報の収集と利用</h2>
+
+        <h3>1.1 保存する情報</h3>
+        <p>このアプリは以下の情報を<strong>お客様のデバイスにのみ</strong>保存します：</p>
+        <ul>
+            <li><strong>目標情報：</strong>お客様が入力した5年/1年/3ヶ月の目標</li>
+            <li><strong>回答記録：</strong>自己反省の質問に対する回答内容および作成時刻</li>
+            <li><strong>アプリ設定：</strong>リマインダー間隔、一時停止設定など</li>
+        </ul>
+
+        <h3>1.2 データ保存方式</h3>
+        <p>すべてのデータは、AndroidのRoom Databaseを使用して<strong>お客様のデバイス内部にのみ</strong>保存されます。</p>
+        <ul>
+            <li>✅ デバイス内部ストレージにのみ保管</li>
+            <li>✅ サーバー送信なし</li>
+            <li>✅ クラウド同期なし</li>
+            <li>✅ 第三者共有なし</li>
+        </ul>
+
+        <h2>2. アプリ権限の使用目的</h2>
+
+        <p>このアプリは、機能提供のために以下の権限を要求します：</p>
+
+        <h3>2.1 必須権限</h3>
+        <ul>
+            <li><strong>他のアプリの上に表示 (SYSTEM_ALERT_WINDOW)：</strong>自己反省の質問ポップアップを表示するために使用</li>
+            <li><strong>通知 (POST_NOTIFICATIONS)：</strong>バックグラウンドサービスの実行状態を通知するために使用</li>
+            <li><strong>ユーザー補助サービス (AccessibilityService)：</strong>アプリの使用を検出し、適切なタイミングで質問を表示するために使用。ユーザーが入力するテキストや個人情報は収集せず、アプリ切り替えイベントのみを検出します。</li>
+            <li><strong>使用状況統計 (PACKAGE_USAGE_STATS)：</strong>本日のスクリーンタイムを表示するために使用。統計はデバイス内でのみ計算され、外部に送信されません。</li>
+        </ul>
+
+        <h3>2.2 オプション権限</h3>
+        <ul>
+            <li><strong>起動時の自動開始 (RECEIVE_BOOT_COMPLETED)：</strong>デバイス再起動後にサービスを自動的に再開するために使用（ユーザーが無効化可能）</li>
+        </ul>
+
+        <h2>3. 個人情報の第三者提供</h2>
+        <p>このアプリは<strong>いかなる個人情報も第三者に提供いたしません。</strong></p>
+        <ul>
+            <li>❌ 広告プラットフォーム使用なし</li>
+            <li>❌ 分析ツール使用なし（Google Analyticsなど）</li>
+            <li>❌ サーバー接続なし</li>
+            <li>❌ ソーシャルメディア連携なし</li>
+        </ul>
+
+        <h2>4. 個人情報の保持および削除</h2>
+
+        <h3>4.1 保持期間</h3>
+        <p>すべてのデータは、お客様がアプリを削除するまでデバイスに保管されます。</p>
+
+        <h3>4.2 削除方法</h3>
+        <p>以下の方法でデータを完全に削除できます：</p>
+        <ul>
+            <li><strong>方法1：</strong>アプリを削除（デバイス設定 > アプリ > 一時停止、振り返り > 削除）</li>
+            <li><strong>方法2：</strong>アプリデータを削除（デバイス設定 > アプリ > 一時停止、振り返り > ストレージ > データを消去）</li>
+        </ul>
+
+        <h2>5. 児童の個人情報保護</h2>
+        <p>このアプリは13歳未満の児童を対象としておらず、13歳未満の児童から故意に情報を収集することはありません。13歳未満の児童の情報が収集されたことが判明した場合、直ちに該当情報を削除いたします。</p>
+
+        <h2>6. プライバシーポリシーの変更</h2>
+        <p>このプライバシーポリシーは、法令、ポリシー、またはアプリ機能の変更に応じて修正される場合があります。重要な変更がある場合は、アプリのアップデートノートを通じてお知らせします。</p>
+
+        <h2>7. お問い合わせ</h2>
+        <div class="contact">
+            <p>このプライバシーポリシーに関するご質問は、以下までご連絡ください：</p>
+            <ul>
+                <li><strong>開発者：</strong>Geunwoo Jeon</li>
+                <li><strong>メール：</strong>geunwoo.jun@gmail.com</li>
+                <li><strong>GitHub：</strong><a href="https://github.com/Geunwoo-Jeon/mindful_pause" target="_blank">github.com/Geunwoo-Jeon/mindful_pause</a></li>
+            </ul>
+        </div>
+
+        <div class="footer">
+            <p>一時停止、振り返り (Pause, Reflect) v0.3.1</p>
+            <p>&copy; 2025 Geunwoo Jeon. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>
